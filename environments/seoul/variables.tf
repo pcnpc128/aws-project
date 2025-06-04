@@ -1,0 +1,22 @@
+variable "region"            { default = "ap-northeast-2" }
+variable "profile"           { default = "default" }
+variable "vpc_cidr"          { default = "10.1.0.0/16" }
+variable "public_subnets"    { default = ["10.1.1.0/24", "10.1.2.0/24"] }
+variable "private_subnets"   { default = ["10.1.11.0/24", "10.1.12.0/24"] }
+variable "azs"               { default = ["ap-northeast-2a", "ap-northeast-2c"] }
+variable "cluster_name"      { default = "myapp-seoul" }
+variable "cluster_version"   { default = "1.29" }
+variable "project_name"      { default = "myapp" }
+variable "environment"       { default = "prod" }
+variable "ecr_repo_name"     { default = "myapp-repo" }
+variable "hpa_name"          { default = "myapp-hpa" }
+variable "hpa_target_name"   { default = "myapp-deployment" }
+variable "db_name"           { default = "seoul-db" }
+variable "db_engine"         { default = "mysql" }
+variable "db_engine_version" { default = "8.0" }
+variable "db_instance_class" { default = "db.t3.micro" }
+variable "db_storage"        { default = 20 }
+variable "db_username"       { default = "root" }
+variable "db_password"       { default = "1234qwer" }
+variable "db_allowed_cidrs"  { default = ["10.1.0.0/16"] }
+
