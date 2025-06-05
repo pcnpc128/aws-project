@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+    }
+  }
+}
+
 # AWS 공식 EKS 모듈 활용 (관리형 노드 그룹까지 자동 생성)
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"

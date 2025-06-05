@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+    }
+  }
+}
+
 # 컨테이너 이미지를 저장하는 ECR(Elastic Container Registry) 리포지토리 생성
 resource "aws_ecr_repository" "app" {
   name = var.name

@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+    }
+  }
+}
+
 # VPC, 퍼블릭/프라이빗 서브넷, IGW, 라우팅 테이블 등 네트워크 인프라 정의
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr

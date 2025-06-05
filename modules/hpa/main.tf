@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      configuration_aliases = [ kubernetes.this ] # 'this'는 호출자에서 넘기는 alias 이름
+    }
+  }
+}
+
 # HPA(Horizontal Pod Autoscaler) 생성 - Deployment 등 CPU 사용률 기반 자동 확장
 resource "kubernetes_horizontal_pod_autoscaler" "default" {
   metadata {

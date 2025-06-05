@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+    }
+  }
+}
+
 # ALB(Application Load Balancer) 및 Target Group, Listener 리소스 정의
 resource "aws_lb" "app" {
   name               = var.name
