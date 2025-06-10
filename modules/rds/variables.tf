@@ -30,10 +30,10 @@ variable "security_group_ids" {
   type = list(string)
 }
 
-variable "multi_az" {
-  type    = bool
-  default = false
-}
+# variable "multi_az" {
+#   type    = bool
+#   default = false
+# }
 
 variable "db_username" {
   type = string
@@ -49,7 +49,6 @@ variable "tags" {
   type = map(string)
   default = {
     Name        = "default-rds"
-    Environment = "dev"
   }
 }
 

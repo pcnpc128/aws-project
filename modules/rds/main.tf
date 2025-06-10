@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+      configuration_aliases = [ aws ] 
     }
   }
 }
@@ -14,11 +14,11 @@ resource "aws_db_subnet_group" "main" {
   tags = { Name = "${var.db_name}-subnet-group" }
 }
 
-# MySQL utf8mb4 파라미터 그룹 생성 (한글/이모지 완벽 지원)
+# MySQL utf8mb4 파라미터 그룹 생성 
 resource "aws_db_parameter_group" "mysql_utf8mb4" {
   name        = "${var.db_name}-utf8mb4"
   family      = "mysql8.0"
-  description = "MySQL 8.0 utf8mb4 (유니코드/이모지/한글 완벽 지원)"
+  description = "MySQL 8.0 utf8mb4 support"
   parameter {
     name  = "character_set_server"
     value = "utf8mb4"
@@ -44,9 +44,10 @@ resource "aws_db_instance" "primary" {
   db_subnet_group_name    = aws_db_subnet_group.main.name
   vpc_security_group_ids  = var.security_group_ids
   parameter_group_name    = aws_db_parameter_group.mysql_utf8mb4.name
-  multi_az                = var.multi_az
-  username         = var.db_username
-  password         = var.db_password
+#  backup_retention_period = 7
+#  multi_az                = var.multi_az
+  username                = var.db_username
+  password                = var.db_password
   skip_final_snapshot     = true
   tags                    = var.tags
 }
@@ -60,7 +61,8 @@ resource "aws_db_instance" "replica" {
   db_subnet_group_name         = aws_db_subnet_group.main.name
   vpc_security_group_ids       = var.security_group_ids
   parameter_group_name         = aws_db_parameter_group.mysql_utf8mb4.name
-  multi_az                     = var.multi_az
+#  backup_retention_period      = 7
+#  multi_az                     = var.multi_az
   skip_final_snapshot          = true
   tags                         = var.tags
 }

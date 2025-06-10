@@ -2,7 +2,7 @@ terraform {
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      configuration_aliases = [ kubernetes.this ] # 'this'는 호출자에서 넘기는 alias 이름
+      configuration_aliases = [ kubernetes ] 
     }
   }
 }

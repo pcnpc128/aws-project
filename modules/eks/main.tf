@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+      configuration_aliases = [ aws ]
     }
   }
 }
@@ -12,7 +12,7 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  subnet_ids      = var.private_subnets
+  subnet_ids      = var.public_subnets
   vpc_id          = var.vpc_id
 
   eks_managed_node_groups = {

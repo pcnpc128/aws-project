@@ -15,16 +15,23 @@ variable "db_password"     {
   default = "1234qwer"
 }
 variable "cluster_version" { default = "1.29" }
+variable "domain_name" {
+  description = "Route 53에서 관리하는 도메인 이름"
+  type        = string
+}
+
+variable "route53_zone_id" {
+  description = "Route 53 호스팅 영역 ID"
+  type        = string
+}
 
 # 서울
-variable "seoul_region"           { default = "ap-northeast-2" }
 variable "seoul_vpc_cidr"         { default = "10.1.0.0/16" }
 variable "seoul_public_subnets"   { default = ["10.1.1.0/24", "10.1.2.0/24"] }
 variable "seoul_private_subnets"  { default = ["10.1.11.0/24", "10.1.12.0/24"] }
 variable "seoul_azs"              { default = ["ap-northeast-2a", "ap-northeast-2c"] }
 
 # 도쿄
-variable "tokyo_region"           { default = "ap-northeast-1" }
 variable "tokyo_vpc_cidr"         { default = "10.2.0.0/16" }
 variable "tokyo_public_subnets"   { default = ["10.2.1.0/24", "10.2.2.0/24"] }
 variable "tokyo_private_subnets"  { default = ["10.2.11.0/24", "10.2.12.0/24"] }

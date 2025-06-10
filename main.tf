@@ -3,13 +3,13 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.seoul_region    # 기본 리전을 서울로 지정
+  region  = "ap-northeast-2"    # 기본 리전을 서울로 지정
   profile = var.profile
   alias   = "seoul"
 }
 
 provider "aws" {
-  region  = var.tokyo_region
+  region  = "ap-northeast-1"
   profile = var.profile
   alias   = "tokyo"
 }
@@ -20,7 +20,7 @@ provider "aws" {
 
 module "seoul_vpc" {
   source          = "./modules/vpc"
-  providers       = { aws.this = aws.seoul }
+  providers       = { aws = aws.seoul }
   vpc_cidr        = var.seoul_vpc_cidr
   public_subnets  = var.seoul_public_subnets
   private_subnets = var.seoul_private_subnets
@@ -29,7 +29,7 @@ module "seoul_vpc" {
 
 module "seoul_alb_sg" {
   source   = "./modules/security-group"
-  providers = { aws.this = aws.seoul }
+  providers = { aws = aws.seoul }
   name     = "seoul-alb-sg"
   vpc_id   = module.seoul_vpc.vpc_id
   ingress_rules = [
@@ -51,13 +51,12 @@ module "seoul_alb_sg" {
   description = "seoul-alb-security-group"
   tags = {
     Name        = "seoul-loadbalance-sg"
-    Environment = var.environment
   }
 }
 
 module "seoul_alb" {
   source           = "./modules/alb"
-  providers        = { aws.this = aws.seoul }
+  providers        = { aws = aws.seoul }
   name             = "myapp-seoul-alb"
   vpc_id           = module.seoul_vpc.vpc_id
   subnet_ids       = module.seoul_vpc.public_subnet_ids
@@ -68,23 +67,23 @@ module "seoul_alb" {
 
 module "seoul_eks" {
   source          = "./modules/eks"
-  providers       = { aws.this = aws.seoul }
+  providers       = { aws = aws.seoul }
   cluster_name    = "myapp-seoul"
   cluster_version = var.cluster_version
   vpc_id          = module.seoul_vpc.vpc_id
-  private_subnets = module.seoul_vpc.private_subnet_ids
+  public_subnets  = module.seoul_vpc.public_subnet_ids
 }
 
 module "seoul_ecr" {
   source      = "./modules/ecr"
-  providers   = { aws.this = aws.seoul }
+  providers   = { aws = aws.seoul }
   name        = "myapp-seoul-ecr"
   environment = var.environment
 }
 
 module "seoul_rds_sg" {
   source   = "./modules/security-group"
-  providers = { aws.this = aws.seoul }
+  providers = { aws = aws.seoul }
   name     = "seoul-db-sg"
   vpc_id   = module.seoul_vpc.vpc_id
   ingress_rules = [
@@ -106,14 +105,13 @@ module "seoul_rds_sg" {
   description = "seoul-rds-security-group"
   tags = {
     Name        = "seoul-rds-sg"
-    Environment = var.environment
   }
 
 }
 
 module "seoul_rds" {
   source               = "./modules/rds"
-  providers            = { aws.this = aws.seoul }
+  providers            = { aws = aws.seoul }
   db_name              = var.db_name
   engine               = var.db_engine
   engine_version       = var.db_engine_version
@@ -124,10 +122,10 @@ module "seoul_rds" {
   private_subnet_ids   = module.seoul_vpc.private_subnet_ids
   vpc_id               = module.seoul_vpc.vpc_id
   security_group_ids   = [module.seoul_rds_sg.security_group_id]
-  multi_az             = true
+#  multi_az             = true
   create_primary       = true
   create_replica       = false
-  tags                 = { Name = "seoul-primary-db", Environment = var.environment }
+  tags                 = { Name = "seoul-primary-db" }
 }
 
 # -----------------------------------
@@ -136,7 +134,7 @@ module "seoul_rds" {
 
 module "tokyo_vpc" {
   source          = "./modules/vpc"
-  providers       = { aws.this = aws.tokyo }
+  providers       = { aws = aws.tokyo }
   vpc_cidr        = var.tokyo_vpc_cidr
   public_subnets  = var.tokyo_public_subnets
   private_subnets = var.tokyo_private_subnets
@@ -145,7 +143,7 @@ module "tokyo_vpc" {
 
 module "tokyo_alb_sg" {
   source   = "./modules/security-group"
-  providers = { aws.this = aws.tokyo }
+  providers = { aws = aws.tokyo }
   name     = "tokyo-alb-sg"
   vpc_id   = module.tokyo_vpc.vpc_id
   ingress_rules = [
@@ -167,14 +165,13 @@ module "tokyo_alb_sg" {
   description = "tokyo-alb-security-group"
   tags = {
     Name        = "tokyo-loadbalance-sg"
-    Environment = var.environment
   }
 
 }
 
 module "tokyo_alb" {
   source           = "./modules/alb"
-  providers        = { aws.this = aws.tokyo }
+  providers        = { aws = aws.tokyo }
   name             = "myapp-tokyo-alb"
   vpc_id           = module.tokyo_vpc.vpc_id
   subnet_ids       = module.tokyo_vpc.public_subnet_ids
@@ -186,23 +183,23 @@ module "tokyo_alb" {
 
 module "tokyo_eks" {
   source          = "./modules/eks"
-  providers       = { aws.this = aws.tokyo }
+  providers       = { aws = aws.tokyo }
   cluster_name    = "myapp-tokyo"
   cluster_version = var.cluster_version
   vpc_id          = module.tokyo_vpc.vpc_id
-  private_subnets = module.tokyo_vpc.private_subnet_ids
+  public_subnets  = module.tokyo_vpc.public_subnet_ids
 }
 
 module "tokyo_ecr" {
   source      = "./modules/ecr"
-  providers   = { aws.this = aws.tokyo }
+  providers   = { aws = aws.tokyo }
   name        = "myapp-tokyo-ecr"
   environment = var.environment
 }
 
 module "tokyo_rds_sg" {
   source   = "./modules/security-group"
-  providers = { aws.this = aws.tokyo }
+  providers = { aws = aws.tokyo }
   name     = "tokyo-db-sg"
   vpc_id   = module.tokyo_vpc.vpc_id
   ingress_rules = [
@@ -224,28 +221,25 @@ module "tokyo_rds_sg" {
   description = "seoul-rds-security-group"
   tags = {
     Name        = "seoul-rds-sg"
-    Environment = var.environment
   }
 
 }
 
 module "tokyo_rds" {
   source               = "./modules/rds"
-  providers            = { aws.this = aws.tokyo }
+  providers            = { aws = aws.tokyo }
   db_name              = var.db_name
   engine               = var.db_engine
   engine_version       = var.db_engine_version
   instance_class       = var.db_instance_class
-  db_username          = var.db_username
-  db_password          = var.db_password
   private_subnet_ids   = module.tokyo_vpc.private_subnet_ids
   security_group_ids   = [module.tokyo_rds_sg.security_group_id]
   vpc_id               = module.tokyo_vpc.vpc_id
   create_primary       = false
   create_replica       = true
-  multi_az             = true
-  replicate_source_db  = module.seoul_rds.db_instance_id   # 서울 RDS output을 input으로 자동 연결!
-  tags                 = { Name = "tokyo-readonly-replica", Environment = var.environment }
+#  multi_az             = true
+  replicate_source_db  = module.seoul_rds.primary_rds_arn   # 서울 RDS output을 input으로 자동 연결!
+  tags                 = { Name = "tokyo-readonly-replica" }
 }
 
 # -----------------------------------
@@ -253,9 +247,20 @@ module "tokyo_rds" {
 # -----------------------------------
 
 module "global_accelerator" {
-  source        = "./modules/global-accelerator"
-  name          = "myapp-dr-accelerator"
-  seoul_alb_arn = module.seoul_alb.alb_arn
-  tokyo_alb_arn = module.tokyo_alb.alb_arn
+  source = "./modules/global-accelerator"
+  name = "myapp-global-accel"
+  endpoints = {
+    seoul = module.seoul_alb.alb_arn
+    tokyo = module.tokyo_alb.alb_arn
+  }
+
+  listener_port = 80
 }
 
+module "route53" {
+  source  = "./modules/route53"
+
+  domain  = var.domain_name                     # 예: "example.com"
+  zone_id = var.route53_zone_id                # 보유 중인 Route53 zone ID
+  ga_dns  = module.global_accelerator.dns_name # GA가 할당한 DNS 이름
+}

@@ -2,22 +2,8 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      configuration_aliases = [ aws.this ] # 'this'는 호출자에서 넘기는 alias 이름
+      configuration_aliases = [ aws ]
     }
-  }
-}
-
-# ALB(Application Load Balancer) 및 Target Group, Listener 리소스 정의
-resource "aws_lb" "app" {
-  name               = var.name
-  internal           = false                                 # 외부 트래픽 허용
-  load_balancer_type = "application"
-  security_groups    = var.security_groups
-  subnets            = var.subnet_ids
-
-  tags = {
-    Environment = var.environment
-    Name        = var.name
   }
 }
 
@@ -26,7 +12,7 @@ resource "aws_lb_target_group" "app" {
   port        = var.port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
-  target_type = "ip"                                         # EKS용은 일반적으로 ip
+  target_type = "ip"                                         # EKS>용은 일반적으로 ip
 
   health_check {
     path                = "/"
@@ -36,6 +22,18 @@ resource "aws_lb_target_group" "app" {
     unhealthy_threshold = 2
     interval            = 30
     timeout             = 5
+  }
+}
+
+resource "aws_lb" "app" {
+  name               = var.name
+  internal           = false                                 # 외부 트래픽 허용
+  load_balancer_type = "application"
+  security_groups    = var.security_groups
+  subnets            = var.subnet_ids
+
+  tags = {
+    Name        = var.name
   }
 }
 
