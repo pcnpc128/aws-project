@@ -7,7 +7,7 @@ resource "aws_globalaccelerator_accelerator" "this" {
 resource "aws_globalaccelerator_listener" "this" {
   accelerator_arn = aws_globalaccelerator_accelerator.this.arn
   protocol        = "TCP"
-  port_ranges {
+  port_range {
     from_port = var.listener_port
     to_port   = var.listener_port
   }

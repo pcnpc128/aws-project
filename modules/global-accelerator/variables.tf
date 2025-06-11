@@ -1,5 +1,5 @@
-variable "seoul_alb_arn" {}
-variable "tokyo_alb_arn" {}
+#variable "seoul_alb_arn" {}
+#variable "tokyo_alb_arn" {}
 variable "name" {
   type = string
 }

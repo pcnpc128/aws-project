@@ -74,6 +74,19 @@ module "seoul_eks" {
   public_subnets  = module.seoul_vpc.public_subnet_ids
 }
 
+module "seoul_eks_app" {
+  source          = "./modules/eks-app"
+  providers       = { aws = aws.seoul }
+  app_name        = "myapp"
+  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+  app_service_name = module.seoul_eks_app.app_service_name
+  cluster_name = module.seoul_eks.cluster_name
+  region       = "ap-northeast-2" 
+  db_host         = "rds.2whhosting.com"
+  vpc_id          = module.seoul_vpc.vpc_id
+}
+
+
 module "seoul_ecr" {
   source      = "./modules/ecr"
   providers   = { aws = aws.seoul }
@@ -190,6 +203,18 @@ module "tokyo_eks" {
   public_subnets  = module.tokyo_vpc.public_subnet_ids
 }
 
+module "tokyo_eks_app" {
+  source          = "./modules/eks-app"
+  providers       = { aws = aws.tokyo }
+  app_name        = "myapp"
+  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+  app_service_name = module.tokyo_eks_app.app_service_name
+  cluster_name = module.tokyo_eks.cluster_name
+  region       = "ap-northeast-1" 
+  db_host         = "rds.2whhosting.com"
+  vpc_id          = module.tokyo_vpc.vpc_id
+}
+
 module "tokyo_ecr" {
   source      = "./modules/ecr"
   providers   = { aws = aws.tokyo }
@@ -258,9 +283,14 @@ module "global_accelerator" {
 }
 
 module "route53" {
-  source  = "./modules/route53"
-
-  domain  = var.domain_name                     # 예: "example.com"
-  zone_id = var.route53_zone_id                # 보유 중인 Route53 zone ID
-  ga_dns  = module.global_accelerator.dns_name # GA가 할당한 DNS 이름
+  source               = "./modules/route53"
+  route53_zone_id      = var.route53_zone_id
+  seoul_rds_endpoint   = var.seoul_rds.endpoint
+  tokyo_rds_endpoint   = var.tokyo_rds.endpoint
+  domain               = var.domain_name
+  ga_dns               = module.global_accelerator.dns_name
+  vpc_id               = {
+    seoul = module.seoul_vpc.vpc_id
+    tokyo = module.tokyo_vpc.vpc_id
+  }
 }
