@@ -43,15 +43,26 @@ resource "aws_route53_record" "rds_secondary" {
   records = [var.tokyo_rds_endpoint]
 }
 
-resource "aws_route53_vpc_association_authorization" "private_zone_auth" {
-  vpc_id  = var.vpc_id
+resource "aws_route53_vpc_association_authorization" "seoul_private_auth" {
+  vpc_id  = var.vpc_id["seoul"]
   zone_id = "Z0051881FLTR38PKBIJ" # 2whhosting.com 프라이빗 호스팅 존
 }
 
-resource "aws_route53_zone_association" "private_zone_link" {
-  vpc_id  = var.vpc_id
+resource "aws_route53_vpc_association_authorization" "tokyo_private_auth" {
+  vpc_id  = var.vpc_id["tokyo"]
   zone_id = "Z0051881FLTR38PKBIJ"
-  depends_on = [aws_route53_vpc_association_authorization.private_zone_auth]
+}
+
+resource "aws_route53_zone_association" "seoul_assoc" {
+  vpc_id  = var.vpc_id["seoul"]
+  zone_id = "Z0051881FLTR38PKBIJ"
+  depends_on = [aws_route53_vpc_association_authorization.seoul_private_auth]
+}
+
+resource "aws_route53_zone_association" "tokyo_assoc" {
+  vpc_id  = var.vpc_id["tokyo"]
+  zone_id = "Z0051881FLTR38PKBIJ"
+  depends_on = [aws_route53_vpc_association_authorization.tokyo_private_auth]
 }
 
 resource "aws_route53_record" "app_global_dns" {

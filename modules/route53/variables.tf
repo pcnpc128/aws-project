@@ -20,5 +20,5 @@ variable "ga_dns" {
 
 variable "vpc_id" {
   description = "EKS가 속한 VPC ID"
-  type        = string
+  type        = map(string)
 }

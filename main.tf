@@ -27,43 +27,43 @@ module "seoul_vpc" {
   azs             = var.seoul_azs
 }
 
-module "seoul_alb_sg" {
-  source   = "./modules/security-group"
-  providers = { aws = aws.seoul }
-  name     = "seoul-alb-sg"
-  vpc_id   = module.seoul_vpc.vpc_id
-  ingress_rules = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
-  egress_rules = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
-  description = "seoul-alb-security-group"
-  tags = {
-    Name        = "seoul-loadbalance-sg"
-  }
-}
+#module "seoul_alb_sg" {
+#  source   = "./modules/security-group"
+#  providers = { aws = aws.seoul }
+#  name     = "seoul-alb-sg"
+#  vpc_id   = module.seoul_vpc.vpc_id
+#  ingress_rules = [
+#    {
+#      from_port   = 80
+#      to_port     = 80
+#      protocol    = "tcp"
+#      cidr_blocks = ["0.0.0.0/0"]
+#    }
+#  ]
+#  egress_rules = [
+#    {
+#      from_port   = 0
+#      to_port     = 0
+#      protocol    = "-1"
+#      cidr_blocks = ["0.0.0.0/0"]
+#    }
+#  ]
+#  description = "seoul-alb-security-group"
+#  tags = {
+#    Name        = "seoul-loadbalance-sg"
+#  }
+#}
 
-module "seoul_alb" {
-  source           = "./modules/alb"
-  providers        = { aws = aws.seoul }
-  name             = "myapp-seoul-alb"
-  vpc_id           = module.seoul_vpc.vpc_id
-  subnet_ids       = module.seoul_vpc.public_subnet_ids
-  port             = 80
-  environment      = var.environment
-  security_groups  = [module.seoul_alb_sg.security_group_id]
-}
+#module "seoul_alb" {
+#  source           = "./modules/alb"
+#  providers        = { aws = aws.seoul }
+#  name             = "myapp-seoul-alb"
+#  vpc_id           = module.seoul_vpc.vpc_id
+#  subnet_ids       = module.seoul_vpc.public_subnet_ids
+#  port             = 80
+#  environment      = var.environment
+#  security_groups  = [module.seoul_alb_sg.security_group_id]
+#}
 
 module "seoul_eks" {
   source          = "./modules/eks"
@@ -154,44 +154,44 @@ module "tokyo_vpc" {
   azs             = var.tokyo_azs
 }
 
-module "tokyo_alb_sg" {
-  source   = "./modules/security-group"
-  providers = { aws = aws.tokyo }
-  name     = "tokyo-alb-sg"
-  vpc_id   = module.tokyo_vpc.vpc_id
-  ingress_rules = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
-  egress_rules = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
-  description = "tokyo-alb-security-group"
-  tags = {
-    Name        = "tokyo-loadbalance-sg"
-  }
+#module "tokyo_alb_sg" {
+#  source   = "./modules/security-group"
+#  providers = { aws = aws.tokyo }
+#  name     = "tokyo-alb-sg"
+#  vpc_id   = module.tokyo_vpc.vpc_id
+#  ingress_rules = [
+#    {
+#      from_port   = 80
+#      to_port     = 80
+#      protocol    = "tcp"
+#      cidr_blocks = ["0.0.0.0/0"]
+#    }
+#  ]
+#  egress_rules = [
+#    {
+#      from_port   = 0
+#      to_port     = 0
+#      protocol    = "-1"
+#      cidr_blocks = ["0.0.0.0/0"]
+#    }
+#  ]
+#  description = "tokyo-alb-security-group"
+#  tags = {
+#    Name        = "tokyo-loadbalance-sg"
+#  }
+#
+#}
 
-}
-
-module "tokyo_alb" {
-  source           = "./modules/alb"
-  providers        = { aws = aws.tokyo }
-  name             = "myapp-tokyo-alb"
-  vpc_id           = module.tokyo_vpc.vpc_id
-  subnet_ids       = module.tokyo_vpc.public_subnet_ids
-  port             = 80
-  environment      = var.environment
-  security_groups  = [module.tokyo_alb_sg.security_group_id]
-}
+#module "tokyo_alb" {
+#  source           = "./modules/alb"
+#  providers        = { aws = aws.tokyo }
+#  name             = "myapp-tokyo-alb"
+#  vpc_id           = module.tokyo_vpc.vpc_id
+#  subnet_ids       = module.tokyo_vpc.public_subnet_ids
+#  port             = 80
+#  environment      = var.environment
+#  security_groups  = [module.tokyo_alb_sg.security_group_id]
+#}
 
 
 module "tokyo_eks" {
@@ -275,8 +275,8 @@ module "global_accelerator" {
   source = "./modules/global-accelerator"
   name = "myapp-global-accel"
   endpoints = {
-    seoul = module.seoul_alb.alb_arn
-    tokyo = module.tokyo_alb.alb_arn
+    seoul = module.seoul_eks_app.alb_hostname
+    tokyo = module.tokyo_eks_app.alb_hostname
   }
 
   listener_port = 80
@@ -285,10 +285,10 @@ module "global_accelerator" {
 module "route53" {
   source               = "./modules/route53"
   route53_zone_id      = var.route53_zone_id
-  seoul_rds_endpoint   = var.seoul_rds.endpoint
-  tokyo_rds_endpoint   = var.tokyo_rds.endpoint
+  seoul_rds_endpoint   = module.seoul_rds.endpoint
+  tokyo_rds_endpoint   = module.tokyo_rds.endpoint
   domain               = var.domain_name
-  ga_dns               = module.global_accelerator.dns_name
+  ga_dns               = module.global_accelerator.ga_dns
   vpc_id               = {
     seoul = module.seoul_vpc.vpc_id
     tokyo = module.tokyo_vpc.vpc_id

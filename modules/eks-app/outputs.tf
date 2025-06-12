@@ -16,3 +16,9 @@ output "container_port" {
 output "app_service_name" {
   value = kubernetes_service.app_svc.metadata[0].name
 }
+
+output "alb_hostname" {
+  description = "Ingress Controller가 생성한 ALB 도메인"
+  value       = kubernetes_ingress_v1.app_ingress.status[0].load_balancer[0].ingress[0].hostname
+}
+
