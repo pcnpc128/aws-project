@@ -1,5 +1,4 @@
 # 공통
-variable "profile"         { default = "default" }
 variable "environment"     { default = "prod" }
 variable "db_name"         { default = "seoul-db" }
 variable "db_engine"       { default = "mysql" }
