@@ -267,9 +267,25 @@ module "tokyo_rds" {
   tags                 = { Name = "tokyo-readonly-replica" }
 }
 
-# -----------------------------------
-# 글로벌 리소스 (Global Accelerator)
-# -----------------------------------
+#module "dms" {
+#  source = "./modules/dms"
+#  subnet_ids         = module.tokyo_vpc.private_subnet_ids
+#  security_group_ids = [module.security_group.dms_sg_id]
+#
+#  source_db_host     = "192.168.1.11"
+#  source_db_username = var.onprem_db_user
+#  source_db_password = var.onprem_db_pass
+#  source_db_name     = "your_source_db"
+#
+#  target_db_host     = module.tokyo_rds.endpoint
+#  target_db_username = var.rds_db_user
+#  target_db_password = var.rds_db_pass
+#  target_db_name     = "your_target_db"
+#}
+
+# ---------------
+#  글로벌 리소스 
+# ---------------
 
 module "global_accelerator" {
   source = "./modules/global-accelerator"
