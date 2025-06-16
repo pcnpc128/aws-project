@@ -3,7 +3,7 @@ name: Terraform Deploy (No S3 Backend)
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
