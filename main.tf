@@ -4,13 +4,11 @@ terraform {
 
 provider "aws" {
   region  = "ap-northeast-2"    # 기본 리전을 서울로 지정
-  profile = var.profile
   alias   = "seoul"
 }
 
 provider "aws" {
   region  = "ap-northeast-1"
-  profile = var.profile
   alias   = "tokyo"
 }
 
