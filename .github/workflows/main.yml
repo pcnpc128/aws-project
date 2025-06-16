@@ -41,11 +41,3 @@ jobs:
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
-
-    - name: Extract Output (ALB DNS)
-      id: output
-      run: |
-        echo "ALB_DNS=$(terraform output -raw alb_dns)" >> $GITHUB_ENV
-
-    - name: Use Output
-      run: echo "▶ 배포된 ALB 주소는: $ALB_DNS"
