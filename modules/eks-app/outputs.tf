@@ -22,3 +22,17 @@ output "alb_hostname" {
   value       = kubernetes_ingress_v1.app_ingress.status[0].load_balancer[0].ingress[0].hostname
 }
 
+output "deployment_name" {
+  description = "Name of the Kubernetes Deployment"
+  value       = kubernetes_deployment.app.metadata[0].name
+}
+
+output "service_port" {
+  description = "Exposed port of the Kubernetes Service"
+  value       = kubernetes_service.app_svc.spec[0].port[0].port
+}
+
+output "container_image" {
+  description = "Deployed container image"
+  value       = kubernetes_deployment.app.spec[0].template[0].spec[0].container[0].image
+}
