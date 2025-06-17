@@ -1,6 +1,7 @@
 resource "helm_release" "cluster_autoscaler" {
+  provider   = helm.eks
   name       = "cluster-autoscaler"
-  namespace  = var.namespace
+  namespace  = "kube-system"
   repository = "https://kubernetes.github.io/autoscaler"
   chart      = "cluster-autoscaler"
   version    = "9.29.0"
@@ -10,9 +11,12 @@ resource "helm_release" "cluster_autoscaler" {
       autoDiscovery = {
         clusterName = var.cluster_name
       },
-      awsRegion = var.region,
+      awsRegion = var.aws_region,
       rbac = {
-        create = true
+        serviceAccount = {
+          create = true
+          name   = "cluster-autoscaler"
+        }
       },
       extraArgs = {
         "skip-nodes-with-local-storage" = "false",
