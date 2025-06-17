@@ -33,6 +33,13 @@ jobs:
     - name: Terraform Apply (VPC Only)
       run: terraform apply -auto-approve tfplan-vpc || true
 
+    - name: Save tfstate for destroy
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate-seoul
+        path: terraform.tfstate
+
   destroy:
     needs: apply
     runs-on: ubuntu-latest
@@ -47,7 +54,7 @@ jobs:
 
     steps:
     - name: Wait 2 minutes before destroy
-      run: sleep 60
+      run: sleep 120
 
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -56,6 +63,15 @@ jobs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate-seoul
+        path: ./tfstate
+
+    - name: Move tfstate into place
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
 
     - name: Terraform Init
       run: terraform init
