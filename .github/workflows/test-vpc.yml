@@ -45,8 +45,8 @@ jobs:
           terraform apply -auto-approve -target=module.tokyo_vpc
         fi
 
-    - name: Upload Terraform State
+    - name: Save Terraform State (for destroy)
       uses: actions/upload-artifact@v4
       with:
-        name: tfstate
+        name: tfstate-${{ github.event.inputs.region }}
         path: terraform.tfstate
