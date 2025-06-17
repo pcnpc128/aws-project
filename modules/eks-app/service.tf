@@ -1,4 +1,6 @@
 resource "kubernetes_service" "app_svc" {
+  provider = kubernetes.eks
+
   metadata {
     name      = "${var.app_name}-svc"
     namespace = var.namespace
@@ -13,10 +15,10 @@ resource "kubernetes_service" "app_svc" {
     }
 
     port {
-      port        = 80
+      port        = var.service_port
       target_port = var.container_port
     }
 
-    type = "NodePort"
+    type = "ClusterIP" # 또는 "NodePort" 선택
   }
 }
