@@ -79,6 +79,8 @@ module "seoul_eks_app" {
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   app_service_name = module.seoul_eks_app.app_service_name
   cluster_name = module.seoul_eks.cluster_name
+  cluster_endpoint = module.seoul_eks.cluster_endpoint
+  cluster_ca       = module.seoul_eks.cluster_certificate_authority_data
   region       = "ap-northeast-2" 
   db_host         = "rds.2whhosting.com"
   vpc_id          = module.seoul_vpc.vpc_id
@@ -208,6 +210,8 @@ module "tokyo_eks_app" {
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   app_service_name = module.tokyo_eks_app.app_service_name
   cluster_name = module.tokyo_eks.cluster_name
+  cluster_endpoint = module.tokyo_eks.cluster_endpoint
+  cluster_ca       = module.tokyo_eks.cluster_certificate_authority_data
   region       = "ap-northeast-1" 
   db_host         = "rds.2whhosting.com"
   vpc_id          = module.tokyo_vpc.vpc_id
@@ -241,9 +245,9 @@ module "tokyo_rds_sg" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   ]
-  description = "seoul-rds-security-group"
+  description = "tokyo-rds-security-group"
   tags = {
-    Name        = "seoul-rds-sg"
+    Name        = "tokyo-rds-sg"
   }
 
 }
