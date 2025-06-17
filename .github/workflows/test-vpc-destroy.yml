@@ -29,7 +29,7 @@ jobs:
     - name: Load Terraform State (from apply)
       uses: actions/download-artifact@v4
       with:
-        name: tfstate-${{ github.event.inputs.region }}
+        name: tfstate
 
     - name: Terraform Init
       run: terraform init
