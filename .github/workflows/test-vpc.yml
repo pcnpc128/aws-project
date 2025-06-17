@@ -50,6 +50,3 @@ jobs:
       with:
         name: tfstate-${{ github.event.inputs.region }}
         path: terraform.tfstate
-
-    - name: Move tfstate to current dir
-      run: mv tfstate-seoul/terraform.tfstate terraform.tfstate
