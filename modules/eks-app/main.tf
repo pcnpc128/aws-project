@@ -72,28 +72,3 @@ resource "kubernetes_deployment" "app" {
     }
   }
 }
-
-resource "helm_release" "cluster_autoscaler" {
-  provider = helm.eks
-
-  name       = "cluster-autoscaler"
-  namespace  = "kube-system"
-  repository = "https://kubernetes.github.io/autoscaler"
-  chart      = "cluster-autoscaler"
-  version    = "9.29.0"
-
-  values = [
-    yamlencode({
-      autoDiscovery = {
-        clusterName = var.cluster_name
-      }
-      awsRegion = var.aws_region
-      rbac = {
-        serviceAccount = {
-          create = true
-          name   = "cluster-autoscaler"
-        }
-      }
-    })
-  ]
-}
