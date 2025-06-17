@@ -35,6 +35,8 @@ jobs:
       with:
         name: tfstate-seoul
         path: ./tfstate
+        repository: pcnpc128/aws-project
+        run-id: ${{ github.event.workflow_run.id }}
 
     - name: Move tfstate
       run: mv ./tfstate/terraform.tfstate terraform.tfstate
