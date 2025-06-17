@@ -31,6 +31,9 @@ jobs:
       with:
         name: tfstate-${{ github.event.inputs.region }}
 
+    - name: Move tfstate to working directory
+      run: mv tfstate-seoul/terraform.tfstate terraform.tfstate
+
     - name: Terraform Init
       run: terraform init
 
