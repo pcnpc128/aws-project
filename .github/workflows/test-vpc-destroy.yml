@@ -1,24 +1,17 @@
-name: Terraform VPC Destroy
+name: Terraform Destroy - VPC only
 
 on:
   workflow_dispatch:
-    inputs:
-      region:
-        description: '삭제할 VPC 리전 (seoul 또는 tokyo)'
-        required: true
-        default: 'seoul'
 
 jobs:
   destroy-vpc:
     runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ap-northeast-2
+    defaults:
+      run:
+        working-directory: ./
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Code
       uses: actions/checkout@v3
 
     - name: Setup Terraform
@@ -26,10 +19,10 @@ jobs:
       with:
         terraform_version: 1.7.5
 
-    - name: Load Terraform State (from apply)
+    - name: Download Terraform State
       uses: actions/download-artifact@v4
       with:
-        name: tfstate-${{ github.event.inputs.region }}
+        name: tfstate-seoul
 
     - name: Move tfstate to working directory
       run: mv tfstate-seoul/terraform.tfstate terraform.tfstate
@@ -38,9 +31,4 @@ jobs:
       run: terraform init
 
     - name: Terraform Destroy - VPC only
-      run: |
-        if [ "${{ github.event.inputs.region }}" = "seoul" ]; then
-          terraform destroy -auto-approve -target=module.seoul_vpc
-        else
-          terraform destroy -auto-approve -target=module.tokyo_vpc
-        fi
+      run: terraform destroy -auto-approve -target=module.seoul_vpc
