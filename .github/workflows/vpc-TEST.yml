@@ -31,7 +31,8 @@ jobs:
       run: terraform plan -target=module.seoul_vpc -out=tfplan-vpc
 
     - name: Terraform Apply (VPC Only)
-      run: terraform apply -auto-approve tfplan-vpc || true
+      run: terraform apply -auto-approve tfplan-vpc
+      continue-on-error: true
 
     - name: Save tfstate for destroy
       if: always()
