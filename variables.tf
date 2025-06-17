@@ -29,3 +29,63 @@ variable "tokyo_vpc_cidr"         { default = "10.2.0.0/16" }
 variable "tokyo_public_subnets"   { default = ["10.2.1.0/24", "10.2.2.0/24"] }
 variable "tokyo_private_subnets"  { default = ["10.2.11.0/24", "10.2.12.0/24"] }
 variable "tokyo_azs"              { default = ["ap-northeast-1a", "ap-northeast-1c"] }
+
+variable "region" {
+  description = "배포 대상 AWS 리전"
+  type        = string
+}
+
+variable "cluster_name" {
+  description = "EKS 클러스터 이름"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "EKS가 배포될 VPC ID"
+  type        = string
+}
+
+variable "app_name" {
+  description = "애플리케이션 이름"
+  type        = string
+}
+
+variable "app_image" {
+  description = "ECR에 저장된 애플리케이션 이미지"
+  type        = string
+}
+
+variable "db_host" {
+  description = "접속할 DB 호스트명"
+  type        = string
+}
+
+variable "namespace" {
+  description = "Kubernetes 네임스페이스"
+  type        = string
+  default     = "default"
+}
+
+variable "replica_count" {
+  description = "파드 복제 수"
+  type        = number
+  default     = 2
+}
+
+variable "db_port" {
+  description = "DB 포트"
+  type        = string
+  default     = "3306"
+}
+
+variable "container_port" {
+  description = "컨테이너 내부 포트"
+  type        = number
+  default     = 8080
+}
+
+variable "service_port" {
+  description = "서비스가 외부에 노출할 포트"
+  type        = number
+  default     = 80
+}
