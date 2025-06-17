@@ -44,7 +44,7 @@ resource "aws_db_instance" "primary" {
   db_subnet_group_name    = aws_db_subnet_group.main.name
   vpc_security_group_ids  = var.security_group_ids
   parameter_group_name    = aws_db_parameter_group.mysql_utf8mb4.name
-#  backup_retention_period = 7
+  backup_retention_period = 7
 #  multi_az                = var.multi_az
   username                = var.db_username
   password                = var.db_password
