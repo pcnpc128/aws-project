@@ -1,0 +1,43 @@
+name: Terraform VPC Destroy
+
+on:
+  workflow_run:
+    workflows: ["Terraform VPC Apply"]
+    types:
+      - completed
+
+jobs:
+  destroy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate-seoul
+
+    - name: Move tfstate
+      run: mv tfstate-seoul/terraform.tfstate terraform.tfstate
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve -target=module.seoul_vpc
