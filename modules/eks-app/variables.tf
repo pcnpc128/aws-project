@@ -56,3 +56,6 @@ variable "app_service_name" {
   description = "Ingress에서 참조할 서비스 이름"
   type        = string
 }
+
+variable "cluster_endpoint" {}
+variable "cluster_ca" {}
