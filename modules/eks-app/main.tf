@@ -7,22 +7,6 @@ terraform {
   }
 }
 
-provider "kubernetes" {
-  alias                  = "eks"
-  host                   = var.cluster_endpoint
-  cluster_ca_certificate = base64decode(var.cluster_ca)
-  token                  = data.aws_eks_cluster_auth.default.token
-}
-
-provider "helm" {
-  alias = "eks"
-  kubernetes {
-    host                   = var.cluster_endpoint
-    cluster_ca_certificate = base64decode(var.cluster_ca)
-    token                  = data.aws_eks_cluster_auth.default.token
-  }
-}
-
 data "aws_eks_cluster_auth" "default" {
   name = var.cluster_name
 }
