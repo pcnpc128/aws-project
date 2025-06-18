@@ -24,6 +24,20 @@ jobs:
       with:
         terraform_version: 1.7.5
 
+    - name: Configure kubeconfig for EKS Seoul
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-2 \
+          --name myapp-seoul \
+          --kubeconfig ./kubeconfig-seoul
+
+    - name: Configure kubeconfig for EKS Tokyo
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-1 \
+          --name myapp-tokyo \
+          --kubeconfig ./kubeconfig-tokyo
+
     - name: Terraform Init
       run: terraform init
 
