@@ -14,6 +14,12 @@ variable "domain" {
   type = string
 }
 
+variable "private_zone_id" {
+  description = "프라이빗 호스팅 존 ID"
+  type        = string
+  default     = "Z0AAAAAAFLTR38PKSEOUL" # 실제 값으로 대체
+}
+
 variable "ga_dns" {
   type = string
 }
