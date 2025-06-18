@@ -18,11 +18,6 @@ variable "aws_region" {
   type        = string
 }
 
-variable "region" {
-  description = "EKS 배포용 리전"
-  type        = string
-}
-
 variable "vpc_id" {
   description = "EKS가 배포될 VPC ID"
   type        = string
