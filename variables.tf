@@ -46,7 +46,10 @@ variable "cluster_name" {
 variable "vpc_id" {
   description = "EKS가 배포될 VPC ID"
   type        = map(string)
-  default     = "default"
+  default     = {
+    seoul = "vpc-xxxxxxxxxxxxxxxxx"
+    tokyo = "vpc-yyyyyyyyyyyyyyyyy"
+  }
 }
 
 variable "app_name" {
