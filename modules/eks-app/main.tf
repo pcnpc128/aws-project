@@ -7,10 +7,6 @@ terraform {
   }
 }
 
-data "aws_eks_cluster_auth" "default" {
-  name = var.cluster_name
-}
-
 resource "kubernetes_deployment" "app" {
   provider = kubernetes.eks
   metadata {
