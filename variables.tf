@@ -48,6 +48,7 @@ variable "vpc_id" {
 variable "app_name" {
   description = "애플리케이션 이름"
   type        = string
+  default     = "myapp"
 }
 
 variable "app_image" {
@@ -59,6 +60,7 @@ variable "app_image" {
 variable "db_host" {
   description = "접속할 DB 호스트명"
   type        = string
+  default     = "rds.myapp.com"
 }
 
 variable "namespace" {
