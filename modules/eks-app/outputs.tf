@@ -36,15 +36,3 @@ output "container_image" {
   description = "Deployed container image"
   value       = kubernetes_deployment.app.spec[0].template[0].spec[0].container[0].image
 }
-
-output "cluster_certificate_authority_data" {
-  value = module.eks.cluster_certificate_authority[0].data
-}
-
-output "cluster_oidc_issuer_url" {
-  value = module.eks.oidc_provider
-}
-
-output "cluster_oidc_thumbprint" {
-  value = data.tls_certificate.oidc_cert.certificates[0].sha1_fingerprint
-}
