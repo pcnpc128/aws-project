@@ -10,7 +10,7 @@ output "cluster_endpoint" {
 
 output "cluster_ca" {
   description = "클러스터 인증서(base64)"
-  value = module.eks.cluster_certificate_authority[0].data
+  value = module.eks.cluster_certificate_authority.data
 }
 
 output "cluster_oidc_issuer_url" {
