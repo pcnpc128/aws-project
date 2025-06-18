@@ -44,6 +44,24 @@ provider "helm" {
   }
 }
 
+data "aws_eks_cluster" "seoul" {
+  name = module.seoul_eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "seoul" {
+  name = module.seoul_eks.cluster_name
+}
+
+data "aws_eks_cluster" "tokyo" {
+  provider = aws.tokyo
+  name     = module.tokyo_eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "tokyo" {
+  provider = aws.tokyo
+  name     = module.tokyo_eks.cluster_name
+}
+
 # -----------------------------------
 # 서울 리전 리소스 모듈
 # -----------------------------------
