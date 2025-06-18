@@ -12,6 +12,38 @@ provider "aws" {
   alias   = "tokyo"
 }
 
+provider "kubernetes" {
+  alias = "seoul"
+  host                   = module.seoul_eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.seoul.token
+}
+
+provider "kubernetes" {
+  alias = "tokyo"
+  host                   = module.tokyo_eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.tokyo.token
+}
+
+provider "helm" {
+  alias = "seoul"
+  kubernetes {
+    host                   = module.seoul_eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.seoul.token
+  }
+}
+
+provider "helm" {
+  alias = "tokyo"
+  kubernetes {
+    host                   = module.tokyo_eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.tokyo.token
+  }
+}
+
 # -----------------------------------
 # 서울 리전 리소스 모듈
 # -----------------------------------
