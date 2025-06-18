@@ -33,11 +33,13 @@ variable "tokyo_azs"              { default = ["ap-northeast-1a", "ap-northeast-
 variable "region" {
   description = "배포 대상 AWS 리전"
   type        = string
+  default     = "ap-northeast-2"
 }
 
 variable "cluster_name" {
   description = "EKS 클러스터 이름"
   type        = string
+  default     = "myapp-seoul"
 }
 
 variable "vpc_id" {
