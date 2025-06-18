@@ -16,14 +16,12 @@ provider "kubernetes" {
   alias = "seoul"
   host                   = module.seoul_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.seoul.token
 }
 
 provider "kubernetes" {
   alias = "tokyo"
   host                   = module.tokyo_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.tokyo.token
 }
 
 provider "helm" {
@@ -31,7 +29,6 @@ provider "helm" {
   kubernetes {
     host                   = module.seoul_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.seoul.token
   }
 }
 
@@ -40,26 +37,7 @@ provider "helm" {
   kubernetes {
     host                   = module.tokyo_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.tokyo.token
   }
-}
-
-data "aws_eks_cluster" "seoul" {
-  name = module.seoul_eks.cluster_name
-}
-
-data "aws_eks_cluster_auth" "seoul" {
-  name = module.seoul_eks.cluster_name
-}
-
-data "aws_eks_cluster" "tokyo" {
-  provider = aws.tokyo
-  name     = module.tokyo_eks.cluster_name
-}
-
-data "aws_eks_cluster_auth" "tokyo" {
-  provider = aws.tokyo
-  name     = module.tokyo_eks.cluster_name
 }
 
 # -----------------------------------
