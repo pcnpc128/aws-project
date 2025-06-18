@@ -42,10 +42,11 @@ variable "cluster_name" {
   default     = "myapp-seoul"
 }
 
-#variable "vpc_id" {
-#  description = "EKS가 배포될 VPC ID"
-#  type        = string
-#}
+variable "vpc_id" {
+  description = "EKS가 배포될 VPC ID"
+  type        = string
+  default     = "default"
+}
 
 variable "app_name" {
   description = "애플리케이션 이름"
