@@ -12,39 +12,6 @@ provider "aws" {
   alias   = "tokyo"
 }
 
-provider "kubernetes" {
-  host                   = module.seoul_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
-  token                  = data.aws_seoul_eks_cluster_auth.main.token
-  alias                  = "eks"
-}
-
-provider "kubernetes" {
-  host                   = module.tokyo_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
-  token                  = data.aws_tokyo_eks_cluster_auth.main.token
-  alias                  = "eks"
-}
-
-provider "helm" {
-  alias                  = "eks"
-  kubernetes {
-    host                   = module.seoul_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
-    token                  = data.aws_seoul_eks_cluster_auth.main.token
-  }
-}
-
-provider "helm" {
-  alias                  = "eks"
-  kubernetes {
-    host                   = module.tokyo_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
-    token                  = data.aws_tokyo_eks_cluster_auth.main.token
-  }
-}
-
-
 data "aws_seoul_eks_cluster" "main" {
   name = module.seoul_eks.cluster_name
 }
