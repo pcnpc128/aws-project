@@ -8,13 +8,14 @@ terraform {
 }
 
 provider "kubernetes" {
+  alias                  = "eks"
   host                   = var.cluster_endpoint
   cluster_ca_certificate = base64decode(var.cluster_ca)
   token                  = data.aws_eks_cluster_auth.default.token
-  alias                  = "eks"
 }
 
 provider "helm" {
+  alias = "eks"
   kubernetes {
     host                   = var.cluster_endpoint
     cluster_ca_certificate = base64decode(var.cluster_ca)
