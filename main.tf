@@ -12,22 +12,6 @@ provider "aws" {
   alias   = "tokyo"
 }
 
-data "aws_seoul_eks_cluster" "main" {
-  name = module.seoul_eks.cluster_name
-}
-
-data "aws_tokyo_eks_cluster" "main" {
-  name = module.tokyo_eks.cluster_name
-}
-
-data "aws_seoul_eks_cluster_auth" "main" {
-  name = module.seoul_eks.cluster_name
-}
-
-data "aws_tokyo_eks_cluster_auth" "main" {
-  name = module.tokyo_eks.cluster_name
-}
-
 # -----------------------------------
 # 서울 리전 리소스 모듈
 # -----------------------------------
