@@ -4,6 +4,14 @@ terraform {
       source  = "hashicorp/aws"
       configuration_aliases = [ aws ]
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      alias   = "eks"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      alias   = "eks"
+    }
   }
 }
 
