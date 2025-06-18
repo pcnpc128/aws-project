@@ -53,6 +53,7 @@ variable "app_name" {
 variable "app_image" {
   description = "ECR에 저장된 애플리케이션 이미지"
   type        = string
+  default     = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
 }
 
 variable "db_host" {
