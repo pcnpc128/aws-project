@@ -15,20 +15,20 @@ provider "aws" {
 provider "kubernetes" {
   alias = "seoul"
   host                   = module.seoul_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
+  cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
 }
 
 provider "kubernetes" {
   alias = "tokyo"
   host                   = module.tokyo_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
+  cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
 }
 
 provider "helm" {
   alias = "seoul"
   kubernetes {
     host                   = module.seoul_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.seoul_eks.cluster_certificate_authority_data)
+    cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
   }
 }
 
@@ -36,7 +36,7 @@ provider "helm" {
   alias = "tokyo"
   kubernetes {
     host                   = module.tokyo_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_certificate_authority_data)
+    cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
   }
 }
 
