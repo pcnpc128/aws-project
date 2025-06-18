@@ -39,6 +39,24 @@ provider "helm" {
   }
 }
 
+data "aws_eks_cluster" "seoul" {
+  name = module.seoul_eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "seoul" {
+  name = module.seoul_eks.cluster_name
+}
+
+data "aws_eks_cluster" "tokyo" {
+  provider = aws.tokyo
+  name     = module.tokyo_eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "tokyo" {
+  provider = aws.tokyo
+  name     = module.tokyo_eks.cluster_name
+}
+
 # AWS 공식 EKS 모듈 활용 (관리형 노드 그룹까지 자동 생성)
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
