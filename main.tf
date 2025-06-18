@@ -74,7 +74,11 @@ module "seoul_eks" {
 
 module "seoul_eks_app" {
   source          = "./modules/eks-app"
-  providers       = { aws = aws.seoul }
+  providers = {
+    aws            = aws.seoul
+    kubernetes.eks = kubernetes.seoul
+    helm.eks       = helm.seoul
+  }
   app_name        = "myapp"
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   cluster_name = module.seoul_eks.cluster_name
@@ -206,7 +210,11 @@ module "tokyo_eks" {
 
 module "tokyo_eks_app" {
   source          = "./modules/eks-app"
-  providers       = { aws = aws.tokyo }
+  providers = {
+    aws            = aws.tokyo
+    kubernetes.eks = kubernetes.tokyo
+    helm.eks       = helm.tokyo
+  }
   app_name        = "myapp"
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   cluster_name = module.tokyo_eks.cluster_name
