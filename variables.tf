@@ -95,19 +95,8 @@ variable "service_port" {
 }
 
 # Route53 연동용 추가 변수
-variable "seoul_rds_endpoint" {
-  description = "서울 RDS 엔드포인트 (FQDN 형식이어야 함)"
-  type        = string
-  default     = "mydb-seoul.cluster-abcdefghijk.ap-northeast-2.rds.amazonaws.com"
-}
 
-variable "tokyo_rds_endpoint" {
-  description = "도쿄 RDS 엔드포인트 (FQDN 형식이어야 함)"
-  type        = string
-  default     = "mydb-tokyo.cluster-abcdefghijk.ap-northeast-1.rds.amazonaws.com"
-}
-
-variable "domain" {
+variable "domain_name" {
   description = "Global DNS 이름 (예: www.abnormal-trust.click)"
   type        = string
   default     = "www.abnormal-trust.click"
