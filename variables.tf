@@ -31,12 +31,6 @@ variable "tokyo_private_subnets"  { default = ["10.2.11.0/24", "10.2.12.0/24"] }
 variable "tokyo_azs"              { default = ["ap-northeast-1a", "ap-northeast-1c"] }
 
 # 추가된 변수들
-variable "region" {
-  description = "배포 대상 AWS 리전"
-  type        = string
-  default     = "ap-northeast-2"
-}
-
 variable "cluster_name" {
   description = "EKS 클러스터 이름"
   type        = string
@@ -123,17 +117,4 @@ variable "ga_dns" {
   description = "Global Accelerator DNS 이름"
   type        = string
   default     = "a1b2c3d4e5f6g7.cloudfront.net"
-}
-
-# App 모듈 전달용
-variable "aws_region" {
-  description = "AWS 리전"
-  type        = string
-  default     = "ap-northeast-2"
-}
-
-variable "app_service_name" {
-  description = "애플리케이션 서비스 이름"
-  type        = string
-  default     = "myapp-svc"
 }
