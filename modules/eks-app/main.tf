@@ -6,11 +6,11 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      alias   = "eks"
+      configuration_aliases = [kubernetes.eks]
     }
     helm = {
       source  = "hashicorp/helm"
-      alias   = "eks"
+      configuration_aliases = [helm.eks]
     }
   }
 }
