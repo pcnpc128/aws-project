@@ -96,12 +96,6 @@ variable "service_port" {
 
 # Route53 연동용 추가 변수
 
-variable "domain_name" {
-  description = "Global DNS 이름 (예: www.abnormal-trust.click)"
-  type        = string
-  default     = "www.abnormal-trust.click"
-}
-
 variable "ga_dns" {
   description = "Global Accelerator DNS 이름"
   type        = string
