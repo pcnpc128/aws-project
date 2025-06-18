@@ -36,6 +36,12 @@ variable "region" {
   default     = "ap-northeast-2"
 }
 
+variable "aws_region" {
+  description = "배포 대상 AWS 리전"
+  type        = string
+  default     = "ap-northeast-2"
+}
+
 variable "cluster_name" {
   description = "EKS 클러스터 이름"
   type        = string
@@ -58,6 +64,12 @@ variable "app_image" {
   description = "ECR에 저장된 애플리케이션 이미지"
   type        = string
   default     = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+}
+
+variable "app_service_name" {
+  description = "서비스 이름"
+  type        = string
+  default     = "default" # 임시 기본값
 }
 
 variable "db_host" {
