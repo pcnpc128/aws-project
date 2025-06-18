@@ -15,11 +15,11 @@ output "cluster_ca" {
 
 output "cluster_oidc_issuer_url" {
   description = "EKS 클러스터의 OIDC Issuer URL"
-  value = module.eks.identity[0].oidc[0].issuer
+  value = module.eks.cluster_oidc_issuer_url
 }
 
 data "tls_certificate" "oidc_thumbprint" {
-  url = module.eks.identity[0].oidc[0].issuer
+  url = module.eks.cluster_oidc_issuer_url
 }
 
 output "cluster_oidc_thumbprint" {
