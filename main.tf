@@ -111,7 +111,7 @@ module "seoul_eks_app" {
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   cluster_name = module.seoul_eks.cluster_name
   cluster_endpoint = module.seoul_eks.cluster_endpoint
-  cluster_ca       = module.seoul_eks.cluster_certificate_authority_data
+  cluster_ca       = module.seoul_eks.cluster_ca
   cluster_oidc_issuer_url = module.seoul_eks.cluster_oidc_issuer_url
   cluster_oidc_thumbprint = module.seoul_eks.cluster_oidc_thumbprint
   aws_region       = "ap-northeast-2" 
@@ -247,7 +247,7 @@ module "tokyo_eks_app" {
   app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
   cluster_name = module.tokyo_eks.cluster_name
   cluster_endpoint = module.tokyo_eks.cluster_endpoint
-  cluster_ca       = module.tokyo_eks.cluster_certificate_authority_data
+  cluster_ca       = module.tokyo_eks.cluster_ca
   cluster_oidc_issuer_url = module.tokyo_eks.cluster_oidc_issuer_url
   cluster_oidc_thumbprint = module.tokyo_eks.cluster_oidc_thumbprint
   aws_region       = "ap-northeast-1" 
