@@ -1,5 +1,5 @@
 resource "aws_route53_record" "rds_internal" {
-  zone_id = "Z0051881FLTR38PKBIJ"  # 2whhosting.com 프라이빗 호스팅 존 ID
+  zone_id = var.seoul_private_zone_id  # 서울 전용 프라이빗 호스팅 존 ID
   name    = "rds.2whhosting.com"
   type    = "CNAME"
   ttl     = 30
@@ -43,26 +43,16 @@ resource "aws_route53_record" "rds_secondary" {
   records = [var.tokyo_rds_endpoint]
 }
 
-resource "aws_route53_vpc_association_authorization" "seoul_private_auth" {
-  vpc_id  = var.vpc_id["seoul"]
-  zone_id = "Z0051881FLTR38PKBIJ" # 2whhosting.com 프라이빗 호스팅 존
-}
-
-resource "aws_route53_vpc_association_authorization" "tokyo_private_auth" {
-  vpc_id  = var.vpc_id["tokyo"]
-  zone_id = "Z0051881FLTR38PKBIJ"
-}
-
 resource "aws_route53_zone_association" "seoul_assoc" {
   vpc_id  = var.vpc_id["seoul"]
-  zone_id = "Z0051881FLTR38PKBIJ"
-  depends_on = [aws_route53_vpc_association_authorization.seoul_private_auth]
+  zone_id = var.seoul_private_zone_id
+  vpc_region = "ap-northeast-2"
 }
 
 resource "aws_route53_zone_association" "tokyo_assoc" {
   vpc_id  = var.vpc_id["tokyo"]
-  zone_id = "Z0051881FLTR38PKBIJ"
-  depends_on = [aws_route53_vpc_association_authorization.tokyo_private_auth]
+  zone_id = var.tokyo_private_zone_id
+  vpc_region = "ap-northeast-1"
 }
 
 resource "aws_route53_record" "app_global_dns" {
