@@ -13,15 +13,25 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  alias = "seoul"
+  alias                  = "seoul"
   host                   = module.seoul_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", module.seoul_eks.cluster_name]
+  }
 }
 
 provider "kubernetes" {
-  alias = "tokyo"
+  alias                  = "tokyo"
   host                   = module.tokyo_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", module.tokyo_eks.cluster_name]
+  }
 }
 
 provider "helm" {
@@ -29,6 +39,11 @@ provider "helm" {
   kubernetes = {
     host                   = module.seoul_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
+    exec = {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", module.seoul_eks.cluster_name]
+    }
   }
 }
 
@@ -37,6 +52,11 @@ provider "helm" {
   kubernetes = {
     host                   = module.tokyo_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
+    exec = {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", module.tokyo_eks.cluster_name]
+    }
   }
 }
 
