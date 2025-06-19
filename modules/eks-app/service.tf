@@ -1,5 +1,5 @@
 resource "kubernetes_service" "app_svc" {
-
+  provider = kubernetes.eks
   metadata {
     name      = "${var.app_name}-svc"
     namespace = var.namespace
