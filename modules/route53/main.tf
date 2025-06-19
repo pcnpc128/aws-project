@@ -2,7 +2,7 @@
 
 resource "aws_route53_record" "rds_primary" {
   zone_id = var.route53_zone_id
-  name    = "rds.2whhosting.com"
+  name    = "sr.2whhosting.com"
   type    = "CNAME"
   ttl     = 30
   records = [var.seoul_rds_endpoint]
@@ -10,7 +10,7 @@ resource "aws_route53_record" "rds_primary" {
 
 resource "aws_route53_record" "rds_secondary" {
   zone_id = var.route53_zone_id
-  name    = "rds.2whhosting.com"
+  name    = "tr.2whhosting.com"
   type    = "CNAME"
   ttl     = 30
   records = [var.tokyo_rds_endpoint]
