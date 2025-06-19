@@ -19,7 +19,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "serviceAccount.create"
-    value = false
+    value = "false"
   }
 
   set { # AWS 리전을 명시적으로 지정
