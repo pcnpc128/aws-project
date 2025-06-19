@@ -1,4 +1,5 @@
 resource "kubernetes_horizontal_pod_autoscaler" "app_hpa" {
+  provider = kubernetes.eks
   metadata {
     name      = "${var.app_name}-hpa"
     namespace = var.namespace
