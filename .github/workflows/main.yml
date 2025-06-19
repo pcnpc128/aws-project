@@ -71,7 +71,7 @@ jobs:
 
     steps:
     - name: Wait 2 minutes before destroy
-      run: sleep 600
+      run: sleep 300
 
     - name: Checkout Code
       uses: actions/checkout@v3
