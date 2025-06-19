@@ -1,6 +1,11 @@
-output "rds_internal_dns" {
-  description = "EKS 내부에서 사용할 RDS용 프라이빗 DNS"
-  value       = aws_route53_record.rds_internal.name
+output "rds_primary_dns" {
+  description = "EKS 내부에서 사용할 Seoul RDS용 프라이빗 DNS"
+  value       = aws_route53_record.rds_primary.name
+}
+
+output "rds_secondary_dns" {
+  description = "EKS 내부에서 사용할 Tokyo RDS용 프라이빗 DNS"
+  value       = aws_route53_record.rds_secondary.name
 }
 
 output "app_dns" {
