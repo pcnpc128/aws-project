@@ -17,7 +17,6 @@ terraform {
 }
 
 resource "kubernetes_deployment" "app" {
-  provider = kubernetes.eks
   metadata {
     name      = var.app_name
     namespace = var.namespace
