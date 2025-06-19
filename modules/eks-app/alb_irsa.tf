@@ -145,6 +145,7 @@ resource "aws_iam_role_policy" "alb_controller_inline_policy" {
 }
 
 resource "kubernetes_service_account" "alb_controller_sa" {
+  provider = kubernetes.eks
   metadata {
     name      = "aws-load-balancer-controller"
     namespace = "kube-system"
