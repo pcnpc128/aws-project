@@ -360,7 +360,7 @@ module "global_accelerator" {
 
 module "route53" {
   source               = "./modules/route53"
-  route53_zone_id      = var.route53_zone_id
+  route53_zone_id      = var.private_zone_id
   seoul_rds_endpoint   = module.seoul_rds.endpoint
   tokyo_rds_endpoint   = module.tokyo_rds.endpoint
   domain               = var.domain
