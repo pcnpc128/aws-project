@@ -1,8 +1,3 @@
-output "rds_failover_endpoint" {
-  description = "RDS에 접근할 수 있는 공통 DNS 주소 (Failover)"
-  value       = "rds.myapp.com"
-}
-
 output "rds_internal_dns" {
   description = "EKS 내부에서 사용할 RDS용 프라이빗 DNS"
   value       = aws_route53_record.rds_internal.name
