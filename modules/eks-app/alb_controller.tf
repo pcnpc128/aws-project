@@ -5,7 +5,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   version    = "1.7.1"
 
-  depends_on = [kubernetes_service_account.alb_controller_sa] # Confirm this uses provider = kubernetes.eks (with exec auth)
+  depends_on = [kubernetes_service_account.alb_controller_sa]
 
   set = [
     {
