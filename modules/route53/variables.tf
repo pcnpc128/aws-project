@@ -1,4 +1,8 @@
-variable "route53_zone_id" {
+variable "public_zone_id" {
+  type = string
+}
+
+variable "private_zone_id" {
   type = string
 }
 
