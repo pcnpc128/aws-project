@@ -120,12 +120,12 @@ module "seoul_eks_app" {
 }
 
 
-module "seoul_ecr" {
-  source      = "./modules/ecr"
-  providers   = { aws = aws.seoul }
-  name        = "myapp-seoul-ecr"
-  environment = var.environment
-}
+#module "seoul_ecr" {
+#  source      = "./modules/ecr"
+#  providers   = { aws = aws.seoul }
+#  name        = "myapp-seoul-ecr"
+#  environment = var.environment
+#}
 
 module "seoul_rds_sg" {
   source   = "./modules/security-group"
@@ -255,12 +255,12 @@ module "tokyo_eks_app" {
   vpc_id          = module.tokyo_vpc.vpc_id
 }
 
-module "tokyo_ecr" {
-  source      = "./modules/ecr"
-  providers   = { aws = aws.tokyo }
-  name        = "myapp-tokyo-ecr"
-  environment = var.environment
-}
+#module "tokyo_ecr" {
+#  source      = "./modules/ecr"
+#  providers   = { aws = aws.tokyo }
+#  name        = "myapp-tokyo-ecr"
+#  environment = var.environment
+#}
 
 module "tokyo_rds_sg" {
   source   = "./modules/security-group"
