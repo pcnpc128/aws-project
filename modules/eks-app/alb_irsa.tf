@@ -155,5 +155,4 @@ resource "kubernetes_service_account" "alb_controller_sa" {
   }
   automount_service_account_token = true
   depends_on = [aws_iam_role.alb_controller_irsa]
-  provider = kubernetes.eks
 }
