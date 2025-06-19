@@ -26,7 +26,7 @@ provider "kubernetes" {
 
 provider "helm" {
   alias = "seoul"
-  kubernetes {
+  kubernetes = {
     host                   = module.seoul_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
   }
@@ -34,7 +34,7 @@ provider "helm" {
 
 provider "helm" {
   alias = "tokyo"
-  kubernetes {
+  kubernetes = {
     host                   = module.tokyo_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
   }
