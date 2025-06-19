@@ -11,6 +11,7 @@ terraform {
     helm = {
       source  = "hashicorp/helm"
       configuration_aliases = [helm.eks]
+      version = ">= 2.0.0"
     }
   }
 }
