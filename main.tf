@@ -244,7 +244,7 @@ module "tokyo_eks_app" {
     helm.eks       = helm.tokyo
   }
   app_name        = "myapp"
-  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+  app_image       = "501257812675.dkr.ecr.ap-northeast-1.amazonaws.com/my-node-app:latest"
   cluster_name = module.tokyo_eks.cluster_name
   cluster_endpoint = module.tokyo_eks.cluster_endpoint
   cluster_ca       = module.tokyo_eks.cluster_ca
