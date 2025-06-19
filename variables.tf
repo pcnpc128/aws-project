@@ -14,7 +14,7 @@ variable "db_password"     {
   default = "1234qwer"
 }
 variable "cluster_version" { default = "1.29" }
-variable "domain_name" { default = "abnormal-trust.click" }
+variable "domain" { default = "abnormal-trust.click" }
 
 variable "route53_zone_id" { default = "Z0515787BIQI11V01WCO" }
 
