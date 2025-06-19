@@ -144,11 +144,6 @@ resource "aws_iam_role_policy" "alb_controller_inline_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "alb_controller_attach" {
-  role       = aws_iam_role.alb_controller_irsa.name
-  policy_arn = aws_iam_policy.alb_controller_policy.arn
-}
-
 resource "kubernetes_service_account" "alb_controller_sa" {
   metadata {
     name      = "aws-load-balancer-controller"
