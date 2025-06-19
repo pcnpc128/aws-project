@@ -1,4 +1,5 @@
 resource "kubernetes_ingress_v1" "app_ingress" {
+  provider = kubernetes.eks
   metadata {
     name      = "${var.app_name}-ingress"
     namespace = var.namespace
