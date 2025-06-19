@@ -1,5 +1,4 @@
 resource "helm_release" "cluster_autoscaler" {
-  provider   = helm.eks
   name       = "cluster-autoscaler"
   namespace  = "kube-system"
   repository = "https://kubernetes.github.io/autoscaler"
