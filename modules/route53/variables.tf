@@ -1,6 +1,5 @@
 variable "public_zone_id" {
   type = string
-  default = "Z0515787BIQI11V01WCO"
 }
 
 variable "private_zone_id" {
