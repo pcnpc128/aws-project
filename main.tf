@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  alias                  = "seoul"
+  alias                  = "eks"
   host                   = module.seoul_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
   exec {
@@ -24,7 +24,7 @@ provider "kubernetes" {
 }
 
 provider "kubernetes" {
-  alias                  = "tokyo"
+  alias                  = "eks"
   host                   = module.tokyo_eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
   exec {
@@ -35,7 +35,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  alias = "seoul"
+  alias = "eks"
   kubernetes = {
     host                   = module.seoul_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
@@ -48,7 +48,7 @@ provider "helm" {
 }
 
 provider "helm" {
-  alias = "tokyo"
+  alias = "eks"
   kubernetes = {
     host                   = module.tokyo_eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
