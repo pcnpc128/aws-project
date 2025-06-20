@@ -1,11 +1,5 @@
 # IRSA: IAM Role for Service Account for AWS Load Balancer Controller
 
-resource "aws_iam_openid_connect_provider" "eks" {
-  url             = var.cluster_oidc_issuer_url
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [var.cluster_oidc_thumbprint]
-}
-
 resource "aws_iam_role" "alb_controller_irsa" {
   name = "alb-controller-irsa-${var.cluster_name}"
 
@@ -15,7 +9,7 @@ resource "aws_iam_role" "alb_controller_irsa" {
       {
         Effect = "Allow",
         Principal = {
-          Federated = aws_iam_openid_connect_provider.eks.arn
+          Federated = data.aws_iam_openid_connect_provider.eks.arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
