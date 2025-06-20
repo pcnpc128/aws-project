@@ -120,24 +120,24 @@ module "seoul_eks" {
   public_subnets  = module.seoul_vpc.public_subnet_ids
 }
 
-#module "seoul_eks_app" {
-#  source          = "./modules/eks-app"
-#  providers = {
-#    aws            = aws.seoul
-#    kubernetes.eks = kubernetes.seoul
-#    helm.eks       = helm.seoul
-#  }
-#  app_name        = "myapp"
-#  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
-#  cluster_name = module.seoul_eks.cluster_name
-#  cluster_endpoint = module.seoul_eks.cluster_endpoint
-#  cluster_ca       = module.seoul_eks.cluster_ca
-#  cluster_oidc_issuer_url = module.seoul_eks.cluster_oidc_issuer_url
-#  cluster_oidc_thumbprint = module.seoul_eks.cluster_oidc_thumbprint
-#  aws_region       = "ap-northeast-2" 
-#  db_host         = "sr.2whhosting.com"
-#  vpc_id          = module.seoul_vpc.vpc_id
-#}
+module "seoul_eks_app" {
+  source          = "./modules/eks-app"
+  providers = {
+    aws            = aws.seoul
+    kubernetes.eks = kubernetes.seoul
+    helm.eks       = helm.seoul
+  }
+  app_name        = "myapp"
+  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+  cluster_name = module.seoul_eks.cluster_name
+  cluster_endpoint = module.seoul_eks.cluster_endpoint
+  cluster_ca       = module.seoul_eks.cluster_ca
+  cluster_oidc_issuer_url = module.seoul_eks.cluster_oidc_issuer_url
+  cluster_oidc_thumbprint = module.seoul_eks.cluster_oidc_thumbprint
+  aws_region       = "ap-northeast-2" 
+  db_host         = "sr.2whhosting.com"
+  vpc_id          = module.seoul_vpc.vpc_id
+}
 
 
 #module "seoul_ecr" {
@@ -256,24 +256,24 @@ module "tokyo_eks" {
   public_subnets  = module.tokyo_vpc.public_subnet_ids
 }
 
-#module "tokyo_eks_app" {
-#  source          = "./modules/eks-app"
-#  providers = {
-#    aws            = aws.tokyo
-#    kubernetes.eks = kubernetes.tokyo
-#    helm.eks       = helm.tokyo
-#  }
-#  app_name        = "myapp"
-#  app_image       = "501257812675.dkr.ecr.ap-northeast-1.amazonaws.com/my-node-app:latest"
-#  cluster_name = module.tokyo_eks.cluster_name
-#  cluster_endpoint = module.tokyo_eks.cluster_endpoint
-#  cluster_ca       = module.tokyo_eks.cluster_ca
-#  cluster_oidc_issuer_url = module.tokyo_eks.cluster_oidc_issuer_url
-#  cluster_oidc_thumbprint = module.tokyo_eks.cluster_oidc_thumbprint
-#  aws_region       = "ap-northeast-1" 
-#  db_host         = "tr.2whhosting.com"
-#  vpc_id          = module.tokyo_vpc.vpc_id
-#}
+module "tokyo_eks_app" {
+  source          = "./modules/eks-app"
+  providers = {
+    aws            = aws.tokyo
+    kubernetes.eks = kubernetes.tokyo
+    helm.eks       = helm.tokyo
+  }
+  app_name        = "myapp"
+  app_image       = "501257812675.dkr.ecr.ap-northeast-1.amazonaws.com/my-node-app:latest"
+  cluster_name = module.tokyo_eks.cluster_name
+  cluster_endpoint = module.tokyo_eks.cluster_endpoint
+  cluster_ca       = module.tokyo_eks.cluster_ca
+  cluster_oidc_issuer_url = module.tokyo_eks.cluster_oidc_issuer_url
+  cluster_oidc_thumbprint = module.tokyo_eks.cluster_oidc_thumbprint
+  aws_region       = "ap-northeast-1" 
+  db_host         = "tr.2whhosting.com"
+  vpc_id          = module.tokyo_vpc.vpc_id
+}
 
 #module "tokyo_ecr" {
 #  source      = "./modules/ecr"
@@ -351,10 +351,8 @@ module "global_accelerator" {
   source = "./modules/global-accelerator"
   name = "myapp-global-accel"
   endpoints = {
-    seoul = "10.1.0.1"
-    tokyo = "10.2.0.1"
-#    seoul = module.seoul_eks_app.alb_hostname
-#    tokyo = module.tokyo_eks_app.alb_hostname
+    seoul = module.seoul_eks_app.alb_hostname != "" ? module.seoul_eks_app.alb_hostname : "dummy-seoul.alb"
+    tokyo = module.tokyo_eks_app.alb_hostname != "" ? module.tokyo_eks_app.alb_hostname : "dummy-tokyo.alb"
   }
 
   listener_port = 80
@@ -363,6 +361,7 @@ module "global_accelerator" {
 module "route53" {
   source               = "./modules/route53"
   private_zone_id      = var.private_zone_id
+  public_zone_id       = var.public_zone_id
   seoul_rds_endpoint   = module.seoul_rds.endpoint
   tokyo_rds_endpoint   = module.tokyo_rds.endpoint
   domain               = var.domain
