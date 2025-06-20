@@ -77,10 +77,12 @@ jobs:
       with:
         name: tfstate
         path: ./tfstate
-
+      continue-on-error: true
+      
     - name: Move tfstate
       run: mv ./tfstate/terraform.tfstate terraform.tfstate
-
+      continue-on-error: true
+      
     - name: Terraform Init
       run: terraform init
       continue-on-error: true
