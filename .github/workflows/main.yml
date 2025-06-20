@@ -28,18 +28,19 @@ jobs:
       run: terraform init
 
     - name: Terraform Plan (infra only)
-      run: terraform plan \
-        -target=module.seoul_vpc \
-        -target=module.tokyo_vpc \
-        -target=module.seoul_rds_sg \
-        -target=module.tokyo_rds_sg \
-        -target=module.seoul_rds \
-        -target=module.tokyo_rds \
-        -target=module.route53 \
-        -target=module.global_accelerator \
-        -target=module.seoul_eks \
-        -target=module.tokyo_eks \
-        -out=tfplan
+      run: |
+        terraform plan \
+          -target=module.seoul_vpc \
+          -target=module.tokyo_vpc \
+          -target=module.seoul_rds_sg \
+          -target=module.tokyo_rds_sg \
+          -target=module.seoul_rds \
+          -target=module.tokyo_rds \
+          -target=module.route53 \
+          -target=module.global_accelerator \
+          -target=module.seoul_eks \
+          -target=module.tokyo_eks \
+          -out=tfplan
         
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
