@@ -67,13 +67,3 @@ variable "service_port" {
   type        = number
   default     = 80
 }
-
-variable "cluster_oidc_issuer_url" {
-  description = "EKS 클러스터의 OIDC 공급자 URL"
-  type        = string
-}
-
-variable "cluster_oidc_thumbprint" {
-  description = "OIDC 공급자의 thumbprint (SHA-1 해시)"
-  type        = string
-}
