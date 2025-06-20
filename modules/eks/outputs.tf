@@ -23,6 +23,15 @@ output "cluster_oidc_provider_arn" {
   value       = aws_iam_openid_connect_provider.oidc.arn
 }
 
+output "cluster_oidc_issuer_url" {
+  description = "EKS 클러스터의 OIDC Issuer URL"
+  value       = module.eks.cluster_oidc_issuer_url
+}
+
+data "aws_iam_openid_connect_provider" "eks" {
+  url = module.eks.cluster_oidc_issuer_url
+}
+
 data "tls_certificate" "oidc_thumbprint" {
   url = module.eks.cluster_oidc_issuer_url
 }
