@@ -164,7 +164,7 @@ jobs:
 
   destroy:
     name: Destroy all Terraform Resources
-    needs: infra
+    needs: finalize
     runs-on: ubuntu-latest
     defaults:
       run:
