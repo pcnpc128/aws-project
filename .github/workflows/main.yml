@@ -106,10 +106,11 @@ jobs:
       continue-on-error: true
 
     - name: Terraform Plan (EKS app only)
-      run: terraform plan \
-        -target=module.seoul_eks_app \
-        -target=module.tokyo_eks_app \
-        -out=tfplan
+      run: |
+        terraform plan \
+          -target=module.seoul_eks_app \
+          -target=module.tokyo_eks_app \
+          -out=tfplan
       continue-on-error: true
 
     - name: Terraform Apply (EKS app only)
