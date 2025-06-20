@@ -1,0 +1,1 @@
+oidc_provider_arn = module.tokyo_eks.cluster_oidc_provider_arn
