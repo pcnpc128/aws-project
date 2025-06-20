@@ -2,64 +2,6 @@ terraform {
   required_version = ">= 1.3.0"
 }
 
-provider "aws" {
-  region  = "ap-northeast-2"    # 기본 리전을 서울로 지정
-  alias   = "seoul"
-}
-
-provider "aws" {
-  region  = "ap-northeast-1"
-  alias   = "tokyo"
-}
-
-provider "kubernetes" {
-  alias                  = "seoul"
-  host                   = module.seoul_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", module.seoul_eks.cluster_name]
-  }
-}
-
-provider "kubernetes" {
-  alias                  = "tokyo"
-  host                   = module.tokyo_eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", module.tokyo_eks.cluster_name]
-  }
-}
-
-provider "helm" {
-  alias = "seoul"
-  kubernetes = {
-    host                   = module.seoul_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.seoul_eks.cluster_ca)
-    exec = {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", module.seoul_eks.cluster_name]
-    }
-  }
-}
-
-provider "helm" {
-  alias = "tokyo"
-  kubernetes = {
-    host                   = module.tokyo_eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.tokyo_eks.cluster_ca)
-    exec = {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", module.tokyo_eks.cluster_name]
-    }
-  }
-}
-
 # -----------------------------------
 # 서울 리전 리소스 모듈
 # -----------------------------------
