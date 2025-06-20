@@ -15,7 +15,7 @@ variable "db_password"     {
 }
 variable "cluster_version" { default = "1.29" }
 variable "domain" { default = "abnormal-trust.click" }
-
+variable "public_zone_id" { default = "Z0515787BIQI11V01WCO" }
 variable "private_zone_id" { default = "Z0051881FLTR38PKBIJ" }
 
 # 서울
