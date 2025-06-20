@@ -67,3 +67,11 @@ variable "service_port" {
   type        = number
   default     = 80
 }
+
+variable "cluster_oidc_issuer_url" {
+  type = string
+}
+
+variable "oidc_provider_arn" {
+  type = string
+}
