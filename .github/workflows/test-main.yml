@@ -1,11 +1,11 @@
-name: Terraform Test Workflow (Infra + Destroy)
+name: Terraform 3-Stage Workflow (Infra → EKS App → Finalize)
 
 on:
   workflow_dispatch:
 
 jobs:
   infra:
-    name: Deploy Infra (VPC, RDS, EKS 등)
+    name: Deploy Infra (VPC, RDS, EKS only)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,17 +32,15 @@ jobs:
         terraform plan \
           -target=module.seoul_vpc \
           -target=module.tokyo_vpc \
-          -target=module.seoul_rds_sg \
-          -target=module.tokyo_rds_sg \
+          -target=module.seoul_security_group \
+          -target=module.tokyo_security_group \
           -target=module.seoul_rds \
           -target=module.tokyo_rds \
-          -target=module.route53 \
-          -target=module.global_accelerator \
           -target=module.seoul_eks \
           -target=module.tokyo_eks \
           -out=tfplan
-        
-    - name: Terraform Apply
+
+    - name: Terraform Apply (infra only)
       run: terraform apply -auto-approve tfplan
       continue-on-error: true
 
@@ -53,6 +51,114 @@ jobs:
         name: tfstate
         path: terraform.tfstate
 
+  eks-app:
+    name: Deploy EKS App (Helm & ALB)
+    needs: infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: ./tfstate
+
+    - name: Move tfstate
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
+
+    - name: Terraform Init
+      run: terraform init
+      continue-on-error: true
+      
+    - name: Configure kubeconfig
+      run: |
+        aws eks update-kubeconfig --region ap-northeast-2 --name myapp-seoul --kubeconfig ./kubeconfig-seoul
+        aws eks update-kubeconfig --region ap-northeast-1 --name myapp-tokyo --kubeconfig ./kubeconfig-tokyo
+      continue-on-error: true
+      
+    - name: Terraform Plan (eks-app only)
+      run: |
+        terraform plan \
+          -target=module.seoul_eks_app \
+          -target=module.tokyo_eks_app \
+          -out=tfplan
+      continue-on-error: true
+      
+    - name: Terraform Apply (eks-app only)
+      run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+      
+    - name: Upload Updated tfstate
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
+      continue-on-error: true
+      
+  finalize:
+    name: Finalize GA & Route53
+    needs: eks-app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: ./tfstate
+      continue-on-error: true
+      
+    - name: Move tfstate
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
+      continue-on-error: true
+      
+    - name: Terraform Init
+      run: terraform init
+      continue-on-error: true
+      
+    - name: Terraform Plan (GA + Route53 only)
+      run: |
+        terraform plan \
+          -target=module.global_accelerator \
+          -target=module.route53 \
+          -out=tfplan
+      continue-on-error: true
+      
+    - name: Terraform Apply (GA + Route53 only)
+      run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+      
 
   destroy:
     name: Destroy all Terraform Resources
