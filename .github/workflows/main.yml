@@ -1,15 +1,15 @@
-name: Terraform Deploy (No S3 Backend)
+name: Terraform Full Workflow (Infra + EKS App + Destroy)
 
 on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  infra:
+    name: Deploy Infra (VPC, RDS, EKS 등)
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./
-
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -27,11 +27,65 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan
-
+    - name: Terraform Plan (infra only)
+      run: terraform plan \
+        -target=module.seoul_vpc \
+        -target=module.tokyo_vpc \
+        -target=module.seoul_rds_sg \
+        -target=module.tokyo_rds_sg \
+        -target=module.seoul_rds \
+        -target=module.tokyo_rds \
+        -target=module.route53 \
+        -target=module.global_accelerator \
+        -target=module.seoul_eks \
+        -target=module.tokyo_eks \
+        -out=tfplan
+        
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+
+    - name: Upload Terraform State
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
+
+
+  eks-app:
+    name: Deploy EKS App (Helm & Kubernetes)
+    needs: infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+        
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: ./tfstate
+
+    - name: Move tfstate into place
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
+
+    - name: Terraform Init
+      run: terraform init
       continue-on-error: true
 
     - name: Configure kubeconfig for EKS Seoul
@@ -49,16 +103,30 @@ jobs:
           --name myapp-tokyo \
           --kubeconfig ./kubeconfig-tokyo
       continue-on-error: true
-      
-    - name: Upload Terraform State
+
+    - name: Terraform Plan (EKS app only)
+      run: terraform plan \
+        -target=module.seoul_eks_app \
+        -target=module.tokyo_eks_app \
+        -out=tfplan
+      continue-on-error: true
+
+    - name: Terraform Apply (EKS app only)
+      run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+
+    - name: Upload Updated tfstate (after app deploy)
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: tfstate
         path: terraform.tfstate
+      continue-on-error: true
+
 
   destroy:
-    needs: deploy
+    name: Destroy all Terraform Resources
+    needs: eks-app
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -70,7 +138,7 @@ jobs:
       AWS_REGION: ap-northeast-2
 
     steps:
-    - name: Wait 2 minutes before destroy
+    - name: Wait 5 minutes before destroy
       run: sleep 300
 
     - name: Checkout Code
