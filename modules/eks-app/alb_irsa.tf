@@ -9,12 +9,12 @@ resource "aws_iam_role" "alb_controller_irsa" {
       {
         Effect = "Allow",
         Principal = {
-          Federated = data.aws_iam_openid_connect_provider.eks.arn
+          Federated = var.oidc_provider_arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
-          StringEquals = {
-            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          StringLike = {
+            "${replace(var.cluster_oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:*"
           }
         }
       }
