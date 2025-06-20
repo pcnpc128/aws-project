@@ -351,8 +351,10 @@ module "global_accelerator" {
   source = "./modules/global-accelerator"
   name = "myapp-global-accel"
   endpoints = {
-    seoul = module.seoul_eks_app.alb_hostname
-    tokyo = module.tokyo_eks_app.alb_hostname
+    seoul = "10.1.0.1"
+    tokyo = "10.2.0.1"
+#    seoul = module.seoul_eks_app.alb_hostname
+#    tokyo = module.tokyo_eks_app.alb_hostname
   }
 
   listener_port = 80
@@ -361,10 +363,8 @@ module "global_accelerator" {
 module "route53" {
   source               = "./modules/route53"
   private_zone_id      = var.private_zone_id
-  seoul_rds_endpoint   = "10.1.0.1"
-  tokyo_rds_endpoint   = "10.2.0.1"
-#  seoul_rds_endpoint   = module.seoul_rds.endpoint
-#  tokyo_rds_endpoint   = module.tokyo_rds.endpoint
+  seoul_rds_endpoint   = module.seoul_rds.endpoint
+  tokyo_rds_endpoint   = module.tokyo_rds.endpoint
   domain               = var.domain
   ga_dns               = module.global_accelerator.ga_dns
   vpc_id               = {
