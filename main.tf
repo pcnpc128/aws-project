@@ -2,6 +2,65 @@ terraform {
   required_version = ">= 1.3.0"
 }
 
+provider "aws" {
+  alias  = "seoul"
+  region = "ap-northeast-2"
+}
+
+provider "kubernetes" {
+  alias                  = "seoul"
+  host                   = var.cluster_endpoint
+  cluster_ca_certificate = base64decode(var.cluster_ca)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
+  }
+}
+
+provider "helm" {
+  alias = "seoul"
+  kubernetes {
+    host                   = var.cluster_endpoint
+    cluster_ca_certificate = base64decode(var.cluster_ca)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
+    }
+  }
+}
+
+provider "aws" {
+  alias  = "tokyo"
+  region = "ap-northeast-1"
+}
+
+provider "kubernetes" {
+  alias                  = "tokyo"
+  host                   = var.cluster_endpoint
+  cluster_ca_certificate = base64decode(var.cluster_ca)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
+  }
+}
+
+provider "helm" {
+  alias = "tokyo"
+  kubernetes {
+    host                   = var.cluster_endpoint
+    cluster_ca_certificate = base64decode(var.cluster_ca)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
+    }
+  }
+}
+
+
 # -----------------------------------
 # 서울 리전 리소스 모듈
 # -----------------------------------
