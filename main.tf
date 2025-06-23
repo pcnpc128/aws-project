@@ -7,58 +7,58 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
-provider "kubernetes" {
-  alias                  = "seoul"
-  host                   = var.cluster_endpoint
-  cluster_ca_certificate = base64decode(var.cluster_ca)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
-  }
-}
+#provider "kubernetes" {
+#  alias                  = "seoul"
+#  host                   = var.cluster_endpoint
+#  cluster_ca_certificate = base64decode(var.cluster_ca)
+#  exec {
+#    api_version = "client.authentication.k8s.io/v1beta1"
+#    command     = "aws"
+#    args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
+#  }
+#}
 
-provider "helm" {
-  alias = "seoul"
-  kubernetes {
-    host                   = var.cluster_endpoint
-    cluster_ca_certificate = base64decode(var.cluster_ca)
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
-    }
-  }
-}
+#provider "helm" {
+#  alias = "seoul"
+#  kubernetes {
+#    host                   = var.cluster_endpoint
+#    cluster_ca_certificate = base64decode(var.cluster_ca)
+#    exec {
+#      api_version = "client.authentication.k8s.io/v1beta1"
+#      command     = "aws"
+#      args        = ["eks", "get-token", "--region", "ap-northeast-2", "--cluster-name", var.cluster_name]
+#    }
+#  }
+#}
 
 provider "aws" {
   alias  = "tokyo"
   region = "ap-northeast-1"
 }
 
-provider "kubernetes" {
-  alias                  = "tokyo"
-  host                   = var.cluster_endpoint
-  cluster_ca_certificate = base64decode(var.cluster_ca)
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
-  }
-}
+#provider "kubernetes" {
+#  alias                  = "tokyo"
+#  host                   = var.cluster_endpoint
+#  cluster_ca_certificate = base64decode(var.cluster_ca)
+#  exec {
+#    api_version = "client.authentication.k8s.io/v1beta1"
+#    command     = "aws"
+#    args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
+#  }
+#}
 
-provider "helm" {
-  alias = "tokyo"
-  kubernetes {
-    host                   = var.cluster_endpoint
-    cluster_ca_certificate = base64decode(var.cluster_ca)
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
-    }
-  }
-}
+#provider "helm" {
+#  alias = "tokyo"
+#  kubernetes {
+#    host                   = var.cluster_endpoint
+#    cluster_ca_certificate = base64decode(var.cluster_ca)
+#    exec {
+#      api_version = "client.authentication.k8s.io/v1beta1"
+#      command     = "aws"
+#      args        = ["eks", "get-token", "--region", "ap-northeast-1", "--cluster-name", var.cluster_name]
+#    }
+#  }
+#}
 
 
 # -----------------------------------
@@ -121,24 +121,24 @@ module "seoul_eks" {
   public_subnets  = module.seoul_vpc.public_subnet_ids
 }
 
-module "seoul_eks_app" {
-  source          = "./modules/eks-app"
-  providers = {
-    aws            = aws.seoul
-    kubernetes.eks = kubernetes.seoul
-    helm.eks       = helm.seoul
-  }
-  app_name        = "myapp"
-  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
-  cluster_name = module.seoul_eks.cluster_name
-  cluster_endpoint = module.seoul_eks.cluster_endpoint
-  cluster_ca       = module.seoul_eks.cluster_ca
-  cluster_oidc_issuer_url = module.seoul_eks.cluster_oidc_issuer_url
-  cluster_oidc_thumbprint = module.seoul_eks.cluster_oidc_thumbprint
-  aws_region       = "ap-northeast-2" 
-  db_host         = "sr.2whhosting.com"
-  vpc_id          = module.seoul_vpc.vpc_id
-}
+#module "seoul_eks_app" {
+#  source          = "./modules/eks-app"
+#  providers = {
+#    aws            = aws.seoul
+#    kubernetes.eks = kubernetes.seoul
+#    helm.eks       = helm.seoul
+#  }
+#  app_name        = "myapp"
+#  app_image       = "501257812675.dkr.ecr.ap-northeast-2.amazonaws.com/my-node-app:latest"
+#  cluster_name = module.seoul_eks.cluster_name
+#  cluster_endpoint = module.seoul_eks.cluster_endpoint
+#  cluster_ca       = module.seoul_eks.cluster_ca
+#  cluster_oidc_issuer_url = module.seoul_eks.cluster_oidc_issuer_url
+#  cluster_oidc_thumbprint = module.seoul_eks.cluster_oidc_thumbprint
+#  aws_region       = "ap-northeast-2" 
+#  db_host         = "sr.2whhosting.com"
+#  vpc_id          = module.seoul_vpc.vpc_id
+#}
 
 
 #module "seoul_ecr" {
@@ -257,24 +257,24 @@ module "tokyo_eks" {
   public_subnets  = module.tokyo_vpc.public_subnet_ids
 }
 
-module "tokyo_eks_app" {
-  source          = "./modules/eks-app"
-  providers = {
-    aws            = aws.tokyo
-    kubernetes.eks = kubernetes.tokyo
-    helm.eks       = helm.tokyo
-  }
-  app_name        = "myapp"
-  app_image       = "501257812675.dkr.ecr.ap-northeast-1.amazonaws.com/my-node-app:latest"
-  cluster_name = module.tokyo_eks.cluster_name
-  cluster_endpoint = module.tokyo_eks.cluster_endpoint
-  cluster_ca       = module.tokyo_eks.cluster_ca
-  cluster_oidc_issuer_url = module.tokyo_eks.cluster_oidc_issuer_url
-  cluster_oidc_thumbprint = module.tokyo_eks.cluster_oidc_thumbprint
-  aws_region       = "ap-northeast-1" 
-  db_host         = "tr.2whhosting.com"
-  vpc_id          = module.tokyo_vpc.vpc_id
-}
+#module "tokyo_eks_app" {
+#  source          = "./modules/eks-app"
+#  providers = {
+#    aws            = aws.tokyo
+#    kubernetes.eks = kubernetes.tokyo
+#    helm.eks       = helm.tokyo
+#  }
+#  app_name        = "myapp"
+#  app_image       = "501257812675.dkr.ecr.ap-northeast-1.amazonaws.com/my-node-app:latest"
+#  cluster_name = module.tokyo_eks.cluster_name
+#  cluster_endpoint = module.tokyo_eks.cluster_endpoint
+#  cluster_ca       = module.tokyo_eks.cluster_ca
+#  cluster_oidc_issuer_url = module.tokyo_eks.cluster_oidc_issuer_url
+#  cluster_oidc_thumbprint = module.tokyo_eks.cluster_oidc_thumbprint
+#  aws_region       = "ap-northeast-1" 
+#  db_host         = "tr.2whhosting.com"
+#  vpc_id          = module.tokyo_vpc.vpc_id
+#}
 
 #module "tokyo_ecr" {
 #  source      = "./modules/ecr"
