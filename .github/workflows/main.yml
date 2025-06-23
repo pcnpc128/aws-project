@@ -84,38 +84,84 @@ jobs:
 
     - name: Move tfstate into place
       run: mv ./tfstate/terraform.tfstate terraform.tfstate
+      
+    - name: 필수 도구 설치
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext-base jq mysql-client
 
+        # kubectl 설치
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+      continue-on-error: true
+      
+    - name: kubeconfig 업데이트(서울)
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-2 \
+          --name myapp-seoul
+          --kubeconfig ./kubeconfig-seoul
+      continue-on-error: true
+
+    - name: my-node-app-deployment (서울)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-deployment.yaml
+
+    - name: metric-server 배포 (서울)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+
+    - name: my-node-app-hpa (서울)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-hpa.yaml
+
+
+
+    - name: kubeconfig 업데이트(도쿄)
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-1 \
+          --name myapp-tokyo
+          --kubeconfig ./kubeconfig-tokyo
+      continue-on-error: true
+
+    - name: 도쿄 리전에 배포
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f 
+      
     - name: Terraform Init
       run: terraform init
       continue-on-error: true
 
-    - name: Configure kubeconfig for EKS Seoul
-      run: |
-        aws eks update-kubeconfig \
-          --region ap-northeast-2 \
-          --name myapp-seoul \
-          --kubeconfig ./kubeconfig-seoul
-      continue-on-error: true
+#    - name: Configure kubeconfig for EKS Seoul
+#      run: |
+#        aws eks update-kubeconfig \
+#          --region ap-northeast-2 \
+#          --name myapp-seoul \
+#          --kubeconfig ./kubeconfig-seoul
+#      continue-on-error: true
       
-    - name: Configure kubeconfig for EKS Tokyo
-      run: |
-        aws eks update-kubeconfig \
-          --region ap-northeast-1 \
-          --name myapp-tokyo \
-          --kubeconfig ./kubeconfig-tokyo
-      continue-on-error: true
+#    - name: Configure kubeconfig for EKS Tokyo
+#      run: |
+#        aws eks update-kubeconfig \
+#          --region ap-northeast-1 \
+#          --name myapp-tokyo \
+#          --kubeconfig ./kubeconfig-tokyo
+#      continue-on-error: true
 
-    - name: Terraform Plan (EKS app only)
-      run: |
-        terraform plan \
-          -target=module.seoul_eks_app \
-          -target=module.tokyo_eks_app \
-          -out=tfplan
-      continue-on-error: true
+#    - name: Terraform Plan (EKS app only)
+#      run: |
+#        terraform plan \
+#          -target=module.seoul_eks_app \
+#          -target=module.tokyo_eks_app \
+#          -out=tfplan
+#      continue-on-error: true
 
-    - name: Terraform Apply (EKS app only)
-      run: terraform apply -auto-approve tfplan
-      continue-on-error: true
+#    - name: Terraform Apply (EKS app only)
+#      run: terraform apply -auto-approve tfplan
+#      continue-on-error: true
 
     - name: Upload Updated tfstate (after app deploy)
       if: always()
