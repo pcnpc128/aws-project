@@ -96,8 +96,8 @@ variable "service_port" {
 
 # Route53 연동용 추가 변수
 
-variable "ga_dns" {
-  description = "Global Accelerator DNS 이름"
-  type        = string
-  default     = "a1b2c3d4e5f6g7.cloudfront.net"
-}
+#variable "ga_dns" {
+#  description = "Global Accelerator DNS 이름"
+#  type        = string
+#  default     = "a1b2c3d4e5f6g7.cloudfront.net"
+#}
