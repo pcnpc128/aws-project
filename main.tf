@@ -142,7 +142,7 @@ module "seoul_eks" {
 
 module "seoul_irsa_autoscaler" {
   source = "./modules/irsa-role"
-
+  providers       = { aws = aws.seoul }
   oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
   oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
   namespace             = "kube-system"
@@ -153,7 +153,7 @@ module "seoul_irsa_autoscaler" {
 
 module "seoul_irsa_alb_controller" {
   source = "./modules/irsa-role"
-
+  providers       = { aws = aws.seoul }
   oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
   oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
   namespace             = "kube-system"
@@ -299,7 +299,7 @@ module "tokyo_eks" {
 
 module "tokyo_irsa_autoscaler" {
   source = "./modules/irsa-role"
-
+  providers       = { aws = aws.tokyo }
   oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
   oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
   namespace             = "kube-system"
@@ -310,7 +310,7 @@ module "tokyo_irsa_autoscaler" {
 
 module "tokyo_irsa_alb_controller" {
   source = "./modules/irsa-role"
-
+  providers       = { aws = aws.tokyo }
   oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
   oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
   namespace             = "kube-system"
