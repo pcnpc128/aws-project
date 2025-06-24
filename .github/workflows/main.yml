@@ -55,7 +55,7 @@ jobs:
 
 
   eks-app-seoul:
-    name: Deploy EKS App (Helm & Kubernetes)
+    name: Deploy EKS-seoul App
     needs: infra
     runs-on: ubuntu-latest
     defaults:
@@ -170,7 +170,7 @@ jobs:
 
 
   eks-app-tokyo:
-    name: Deploy EKS App (Helm & Kubernetes)
+    name: Deploy EKS-tokyo App
     needs: infra
     runs-on: ubuntu-latest
     defaults:
@@ -256,11 +256,9 @@ jobs:
       continue-on-error: true
       
 
-        
-
   destroy:
     name: Destroy all Terraform Resources
-    needs: eks-app
+    needs: eks-app-seoul, eks-app-tokyo
     runs-on: ubuntu-latest
     defaults:
       run:
