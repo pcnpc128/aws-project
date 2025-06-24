@@ -8,10 +8,10 @@ output "rds_secondary_dns" {
   value       = aws_route53_record.rds_secondary.name
 }
 
-output "app_dns" {
-  description = "Global Accelerator를 사용하는 앱의 최종 접근 도메인"
-  value       = aws_route53_record.app_global_dns.name
-}
+#output "app_dns" {
+#  description = "Global Accelerator를 사용하는 앱의 최종 접근 도메인"
+#  value       = aws_route53_record.app_global_dns.name
+#}
 
 output "private_zone_id" {
   description = "프라이빗 호스팅 존 ID (2whhosting.com)"
