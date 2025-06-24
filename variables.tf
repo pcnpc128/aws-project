@@ -31,11 +31,11 @@ variable "tokyo_private_subnets"  { default = ["10.2.11.0/24", "10.2.12.0/24"] }
 variable "tokyo_azs"              { default = ["ap-northeast-1a", "ap-northeast-1c"] }
 
 # 추가된 변수들
-variable "cluster_name" {
-  description = "EKS 클러스터 이름"
-  type        = string
-  default     = "myapp-seoul"
-}
+#variable "cluster_name" {
+#  description = "EKS 클러스터 이름"
+#  type        = string
+#  default     = "myapp-seoul"
+#}
 
 variable "vpc_id" {
   description = "EKS가 배포될 VPC ID"
