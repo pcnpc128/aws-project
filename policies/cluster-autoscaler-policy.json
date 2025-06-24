@@ -7,7 +7,7 @@
         "autoscaling:*",
         "ec2:*"
         "ecr:*"
-        "eks"*"
+        "eks:*"
 #        "autoscaling:DescribeAutoScalingGroups",
 #        "autoscaling:DescribeAutoScalingInstances",
 #        "autoscaling:DescribeLaunchConfigurations",
