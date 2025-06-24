@@ -47,11 +47,11 @@ jobs:
       run: aws sts get-caller-identity
 
     - name: Test kubectl auth
-      run: kubectl get nodes
+      run: kubectl --kubeconfig=/home/runner/.kube/config get nodes
 
     - name: my-node-app-deployment (서울)
       run: |
-        kubectl apply -f ./my-node-app-deployment-seoul.yaml
+        kubectl --kubeconfig=/home/runner/.kube/config apply -f ./my-node-app-deployment-seoul.yaml
 
     - name: alb-controller 배포 (서울)
       run: |
