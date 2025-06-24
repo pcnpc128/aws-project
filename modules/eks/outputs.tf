@@ -15,12 +15,12 @@ output "cluster_ca" {
 
 output "cluster_oidc_provider_arn" {
   description = "EKS 클러스터에 연결된 OIDC Provider의 ARN"
-  value       = data.aws_iam_openid_connect_provider.eks.arn
+  value       = module.eks.oidc_provider_arn
 }
 
 output "oidc_provider_arn" {
   description = "OIDC IAM Provider ARN"
-  value       = data.aws_iam_openid_connect_provider.eks.arn
+  value       = module.eks.oidc_provider_arn
 }
 
 output "cluster_oidc_issuer_url" {
