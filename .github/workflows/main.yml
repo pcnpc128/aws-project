@@ -54,7 +54,7 @@ jobs:
         path: terraform.tfstate
 
 
-  eks-app:
+  eks-app-seoul:
     name: Deploy EKS App (Helm & Kubernetes)
     needs: infra
     runs-on: ubuntu-latest
@@ -106,31 +106,28 @@ jobs:
 
     - name: my-node-app-deployment (서울)
       run: |
-        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-deployment.yaml
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-deployment-seoul.yaml
+
+    - name: alb-controller 배포 (서울)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./alb-controller-seoul.yaml
+
+    - name: cluster-autoscaler 배포 (서울)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./cluster-autoscaler-seoul.yaml
 
     - name: metric-server 배포 (서울)
       run: |
         kubectl --kubeconfig=./kubeconfig-seoul apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-
     - name: my-node-app-hpa (서울)
       run: |
         kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-hpa.yaml
 
-
-
-    - name: kubeconfig 업데이트(도쿄)
+    - name: my-node-app-ingress (서울)
       run: |
-        aws eks update-kubeconfig \
-          --region ap-northeast-1 \
-          --name myapp-tokyo
-          --kubeconfig ./kubeconfig-tokyo
-      continue-on-error: true
-
-    - name: 도쿄 리전에 배포
-      run: |
-        kubectl --kubeconfig=./kubeconfig-tokyo apply -f 
-      
+        kubectl --kubeconfig=./kubeconfig-seoul apply -f ./my-node-app-ingress.yaml
+        
     - name: Terraform Init
       run: terraform init
       continue-on-error: true
@@ -171,6 +168,95 @@ jobs:
         path: terraform.tfstate
       continue-on-error: true
 
+
+  eks-app-tokyo:
+    name: Deploy EKS App (Helm & Kubernetes)
+    needs: infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+        
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: ./tfstate
+
+    - name: Move tfstate into place
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
+      
+    - name: 필수 도구 설치
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext-base jq mysql-client
+
+        # kubectl 설치
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+      continue-on-error: true
+      
+    - name: kubeconfig 업데이트(도쿄)
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-1 \
+          --name myapp-tokyo
+          --kubeconfig ./kubeconfig-tokyo
+      continue-on-error: true
+
+    - name: my-node-app-deployment (도쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f ./my-node-app-deployment-tokyo.yaml
+
+    - name: alb-controller 배포 (도쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f ./alb-controller-tokyo.yaml
+
+    - name: cluster-autoscaler 배포 (도쿄쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f ./cluster-autoscaler-tokyo.yaml
+
+    - name: metric-server 배포 (도쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+    - name: my-node-app-hpa (도쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f ./my-node-app-hpa.yaml
+
+    - name: my-node-app-ingress (도쿄)
+      run: |
+        kubectl --kubeconfig=./kubeconfig-tokyo apply -f ./my-node-app-ingress.yaml
+        
+    - name: Terraform Init
+      run: terraform init
+      continue-on-error: true
+
+    - name: Upload Updated tfstate (after app deploy)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
+      continue-on-error: true
+      
+
+        
 
   destroy:
     name: Destroy all Terraform Resources
