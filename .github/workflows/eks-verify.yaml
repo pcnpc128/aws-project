@@ -1,4 +1,4 @@
-name: Terraform Full Workflow (Infra + EKS App + Destroy)
+name: EKS App Workflow
 
 on:
   workflow_dispatch:
