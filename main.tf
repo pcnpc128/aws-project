@@ -148,7 +148,7 @@ module "seoul_irsa_autoscaler" {
   namespace             = "kube-system"
   service_account_name  = "cluster-autoscaler"
   role_name             = "seoul-cluster-autoscaler-role"
-  policy_json           = file("${path.module}/policies/cluster-autoscaler-policy.json")
+  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
 }
 
 module "seoul_irsa_alb_controller" {
@@ -159,7 +159,7 @@ module "seoul_irsa_alb_controller" {
   namespace             = "kube-system"
   service_account_name  = "aws-load-balancer-controller"
   role_name             = "seoul-alb-controller-role"
-  policy_json           = file("${path.module}/policies/alb-controller-policy.json")
+  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
 }
 
 #module "seoul_ecr" {
@@ -305,7 +305,7 @@ module "tokyo_irsa_autoscaler" {
   namespace             = "kube-system"
   service_account_name  = "cluster-autoscaler"
   role_name             = "tokyo-cluster-autoscaler-role"
-  policy_json           = file("${path.module}/policies/cluster-autoscaler-policy.json")
+  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
 }
 
 module "tokyo_irsa_alb_controller" {
@@ -316,7 +316,7 @@ module "tokyo_irsa_alb_controller" {
   namespace             = "kube-system"
   service_account_name  = "aws-load-balancer-controller"
   role_name             = "tokyo-alb-controller-role"
-  policy_json           = file("${path.module}/policies/alb-controller-policy.json")
+  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
 }
 
 #module "tokyo_ecr" {
