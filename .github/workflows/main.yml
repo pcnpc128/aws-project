@@ -258,7 +258,9 @@ jobs:
 
   destroy:
     name: Destroy all Terraform Resources
-    needs: eks-app-seoul, eks-app-tokyo
+    needs: 
+      - eks-app-seoul
+      - eks-app-tokyo
     runs-on: ubuntu-latest
     defaults:
       run:
