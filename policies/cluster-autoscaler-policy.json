@@ -5,8 +5,8 @@
       "Effect": "Allow",
       "Action": [
         "autoscaling:*",
-        "ec2:*"
-        "ecr:*"
+        "ec2:*",
+        "ecr:*",
         "eks:*"
 #        "autoscaling:DescribeAutoScalingGroups",
 #        "autoscaling:DescribeAutoScalingInstances",
