@@ -391,16 +391,16 @@ module "tokyo_rds" {
 #  글로벌 리소스 
 # ---------------
 
-module "global_accelerator" {
-  source = "./modules/global-accelerator"
-  name = "myapp-global-accel"
-  endpoints = {
-    seoul = module.seoul_eks_app.alb_hostname != "" ? module.seoul_eks_app.alb_hostname : "dummy-seoul.alb"
-    tokyo = module.tokyo_eks_app.alb_hostname != "" ? module.tokyo_eks_app.alb_hostname : "dummy-tokyo.alb"
-  }
-
-  listener_port = 80
-}
+#module "global_accelerator" {
+#  source = "./modules/global-accelerator"
+#  name = "myapp-global-accel"
+#  endpoints = {
+#    seoul = module.seoul_eks_app.alb_hostname != "" ? module.seoul_eks_app.alb_hostname : "dummy-seoul.alb"
+#    tokyo = module.tokyo_eks_app.alb_hostname != "" ? module.tokyo_eks_app.alb_hostname : "dummy-tokyo.alb"
+#  }
+#
+#  listener_port = 80
+#}
 
 module "route53" {
   source               = "./modules/route53"
@@ -409,7 +409,7 @@ module "route53" {
   seoul_rds_endpoint   = module.seoul_rds.endpoint
   tokyo_rds_endpoint   = module.tokyo_rds.endpoint
   domain               = var.domain
-  ga_dns               = module.global_accelerator.ga_dns
+#  ga_dns               = module.global_accelerator.ga_dns
   vpc_id               = {
     seoul = module.seoul_vpc.vpc_id
     tokyo = module.tokyo_vpc.vpc_id
