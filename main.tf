@@ -408,7 +408,7 @@ module "route53" {
   public_zone_id       = var.public_zone_id
   seoul_rds_endpoint   = module.seoul_rds.endpoint
   tokyo_rds_endpoint   = module.tokyo_rds.endpoint
-  domain               = var.domain
+#  domain               = var.domain
 #  ga_dns               = module.global_accelerator.ga_dns
   vpc_id               = {
     seoul = module.seoul_vpc.vpc_id
