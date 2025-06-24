@@ -81,81 +81,81 @@ jobs:
         path: terraform.tfstate
 
 
-  eks-app-tokyo:
-    name: Deploy EKS-tokyo App
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
-        
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ap-northeast-1
+#  eks-app-tokyo:
+#    name: Deploy EKS-tokyo App
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: ./
+#        
+#    env:
+#      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#      AWS_REGION: ap-northeast-1
+#
+#    steps:
+#    - name: Checkout repository
+#      uses: actions/checkout@v3
+#
+#    - name: Setup Terraform
+#      uses: hashicorp/setup-terraform@v3
+#      with:
+#        terraform_version: 1.7.5
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.7.5
-
-    - name: 필수 도구 설치
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gettext-base jq mysql-client
+#    - name: 필수 도구 설치
+#      run: |
+#        sudo apt-get update
+#        sudo apt-get install -y gettext-base jq mysql-client
 
         # kubectl 설치
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
+#        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#        chmod +x kubectl
+#        sudo mv kubectl /usr/local/bin/
       
-    - name: kubeconfig 업데이트(도쿄)
-      run: |
-        aws eks update-kubeconfig \
-          --region ap-northeast-1 \
-          --name myapp-tokyo
+#    - name: kubeconfig 업데이트(도쿄)
+#      run: |
+#        aws eks update-kubeconfig \
+#          --region ap-northeast-1 \
+#          --name myapp-tokyo
 
-    - name: kubeconfig-tokyo 존재 여부 및 내용 출력
-      run: |
-        ls -l ~/.kube/config
-        cat ~/.kube/config
+#    - name: kubeconfig-tokyo 존재 여부 및 내용 출력
+#      run: |
+#        ls -l ~/.kube/config
+#        cat ~/.kube/config
 
-    - name: my-node-app-deployment (도쿄)
-      run: |
-        kubectl apply -f ./my-node-app-deployment-tokyo.yaml
+#    - name: my-node-app-deployment (도쿄)
+#      run: |
+#        kubectl apply -f ./my-node-app-deployment-tokyo.yaml
 
-    - name: alb-controller 배포 (도쿄)
-      run: |
-        kubectl apply -f ./alb-controller-tokyo.yaml
+#    - name: alb-controller 배포 (도쿄)
+#      run: |
+#        kubectl apply -f ./alb-controller-tokyo.yaml
 
-    - name: cluster-autoscaler 배포 (도쿄쿄)
-      run: |
-        kubectl apply -f ./cluster-autoscaler-tokyo.yaml
+#    - name: cluster-autoscaler 배포 (도쿄쿄)
+#      run: |
+#        kubectl apply -f ./cluster-autoscaler-tokyo.yaml
 
-    - name: metric-server 배포 (도쿄)
-      run: |
-        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+#    - name: metric-server 배포 (도쿄)
+#      run: |
+#        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-    - name: my-node-app-hpa (도쿄)
-      run: |
-        kubectl apply -f ./my-node-app-hpa.yaml
+#    - name: my-node-app-hpa (도쿄)
+#      run: |
+#        kubectl apply -f ./my-node-app-hpa.yaml
 
-    - name: my-node-app-ingress (도쿄)
-      run: |
-        kubectl apply -f ./my-node-app-ingress.yaml
+#    - name: my-node-app-ingress (도쿄)
+#      run: |
+#        kubectl apply -f ./my-node-app-ingress.yaml
         
-    - name: Terraform Init
-      run: terraform init
+#    - name: Terraform Init
+#      run: terraform init
 
-    - name: Upload Updated tfstate (after app deploy)
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: terraform.tfstate
+#    - name: Upload Updated tfstate (after app deploy)
+#      if: always()
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: tfstate
+#        path: terraform.tfstate
       
 
   destroy:
