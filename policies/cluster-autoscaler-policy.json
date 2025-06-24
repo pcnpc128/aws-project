@@ -8,13 +8,6 @@
         "ec2:*",
         "ecr:*",
         "eks:*"
-#        "autoscaling:DescribeAutoScalingGroups",
-#        "autoscaling:DescribeAutoScalingInstances",
-#        "autoscaling:DescribeLaunchConfigurations",
-#        "autoscaling:DescribeTags",
-#        "autoscaling:SetDesiredCapacity",
-#        "autoscaling:TerminateInstanceInAutoScalingGroup",
-#        "ec2:DescribeLaunchTemplateVersions"
       ],
       "Resource": "*"
     }
