@@ -38,11 +38,11 @@ jobs:
           -target=module.tokyo_rds \
           -target=module.route53 \
           -target=module.seoul_eks \
-          -target=module.tokyo_eks \
+#          -target=module.tokyo_eks \
           -target=module.seoul_irsa_autoscaler \
-          -target=module.tokyo_irsa_autoscaler \
+#          -target=module.tokyo_irsa_autoscaler \
           -target=module.seoul_irsa_alb_controller \
-          -target=module.tokyo_irsa_alb_controller \
+#          -target=module.tokyo_irsa_alb_controller \
           -out=tfplan
         
     - name: Terraform Apply
@@ -79,15 +79,6 @@ jobs:
       with:
         terraform_version: 1.7.5
 
-    - name: Download tfstate
-      uses: actions/download-artifact@v4
-      with:
-        name: tfstate
-        path: ./tfstate
-
-    - name: Move tfstate into place
-      run: mv ./tfstate/terraform.tfstate terraform.tfstate
-      
     - name: 필수 도구 설치
       run: |
         sudo apt-get update
@@ -97,14 +88,12 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
-      continue-on-error: true
       
     - name: kubeconfig 업데이트(서울)
       run: |
         aws eks update-kubeconfig \
           --region ap-northeast-2 \
           --name myapp-seoul
-      continue-on-error: true
 
     - name: kubeconfig-seoul 존재 여부 및 내용 출력
       run: |
@@ -135,10 +124,6 @@ jobs:
       run: |
         kubectl apply -f ./my-node-app-ingress.yaml
         
-    - name: Terraform Init
-      run: terraform init
-      continue-on-error: true
-
 #    - name: Configure kubeconfig for EKS Seoul
 #      run: |
 #        aws eks update-kubeconfig \
@@ -167,18 +152,10 @@ jobs:
 #      run: terraform apply -auto-approve tfplan
 #      continue-on-error: true
 
-    - name: Upload Updated tfstate (after app deploy)
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: terraform.tfstate
-      continue-on-error: true
-
 
   eks-app-tokyo:
     name: Deploy EKS-tokyo App
-    needs: infra
+    needs: eks-app-seoul
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -198,15 +175,6 @@ jobs:
       with:
         terraform_version: 1.7.5
 
-    - name: Download tfstate
-      uses: actions/download-artifact@v4
-      with:
-        name: tfstate
-        path: ./tfstate
-
-    - name: Move tfstate into place
-      run: mv ./tfstate/terraform.tfstate terraform.tfstate
-      
     - name: 필수 도구 설치
       run: |
         sudo apt-get update
@@ -216,14 +184,12 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
-      continue-on-error: true
       
     - name: kubeconfig 업데이트(도쿄)
       run: |
         aws eks update-kubeconfig \
           --region ap-northeast-1 \
           --name myapp-tokyo
-      continue-on-error: true
 
     - name: kubeconfig-tokyo 존재 여부 및 내용 출력
       run: |
@@ -254,24 +220,10 @@ jobs:
       run: |
         kubectl apply -f ./my-node-app-ingress.yaml
         
-    - name: Terraform Init
-      run: terraform init
-      continue-on-error: true
-
-    - name: Upload Updated tfstate (after app deploy)
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: terraform.tfstate
-      continue-on-error: true
-      
 
   destroy:
     name: Destroy all Terraform Resources
-    needs: 
-      - eks-app-seoul
-      - eks-app-tokyo
+    needs: eks-app-tokyo
     runs-on: ubuntu-latest
     defaults:
       run:
