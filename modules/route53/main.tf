@@ -30,14 +30,14 @@ resource "aws_route53_zone_association" "tokyo_assoc" {
 }
 
 # Global Accelerator와 연동된 전역 애플리케이션 DNS
-resource "aws_route53_record" "app_global_dns" {
-  zone_id = var.public_zone_id
-  name    = var.domain
-  type    = "A"
-
-  alias {
-    name                   = var.ga_dns
-    zone_id                = "Z2BJ6XQ5FK7U4H" # Global Accelerator 고정 Zone ID
-    evaluate_target_health = false
-  }
-}
+#resource "aws_route53_record" "app_global_dns" {
+#  zone_id = var.public_zone_id
+#  name    = var.domain
+#  type    = "A"
+#
+#  alias {
+#    name                   = var.ga_dns
+#    zone_id                = "Z2BJ6XQ5FK7U4H" # Global Accelerator 고정 Zone ID
+#    evaluate_target_health = false
+#  }
+#}
