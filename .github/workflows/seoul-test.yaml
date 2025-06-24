@@ -1,0 +1,136 @@
+name: seoul-region Terraform
+
+on:
+  workflow_dispatch:
+
+jobs:
+  infra:
+    name: Deploy Infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan (infra only)
+      run: |
+        terraform plan \
+          -target=module.seoul_vpc \
+          -target=module.tokyo_vpc \
+          -target=module.route53 \
+          -target=module.seoul_eks \
+          -target=module.seoul_irsa_autoscaler \
+          -target=module.seoul_irsa_alb_controller \
+          -out=tfplan
+        
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+
+    - name: Upload Terraform State
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
+
+    - name: 필수 도구 설치
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext-base jq mysql-client
+
+        # kubectl 설치
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+      
+    - name: kubeconfig 업데이트(서울)
+      run: |
+        aws eks update-kubeconfig \
+          --region ap-northeast-2 \
+          --name myapp-seoul
+
+    - name: kubeconfig-seoul 존재 여부 및 내용 출력
+      run: |
+        ls -l ~/.kube/config
+        cat ~/.kube/config
+
+    - name: metric-server 배포 (서울)
+      run: |
+        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+    - name: my-node-app-deployment (서울)
+      run: |
+        kubectl apply -f ./my-node-app-deployment-seoul.yaml
+
+    - name: alb-controller 배포 (서울)
+      run: |
+        kubectl apply -f ./alb-controller-seoul.yaml
+
+    - name: cluster-autoscaler 배포 (서울)
+      run: |
+        kubectl apply -f ./cluster-autoscaler-seoul.yaml
+
+    - name: my-node-app-hpa (서울)
+      run: |
+        kubectl apply -f ./my-node-app-hpa.yaml
+
+    - name: my-node-app-ingress (서울)
+      run: |
+        kubectl apply -f ./my-node-app-ingress.yaml
+  
+
+  destroy:
+    name: Destroy all Terraform Resources
+    needs: infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Wait 5 minutes before destroy
+      run: sleep 300
+
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: ./tfstate
+
+    - name: Move tfstate into place
+      run: mv ./tfstate/terraform.tfstate terraform.tfstate
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
