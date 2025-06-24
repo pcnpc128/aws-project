@@ -13,11 +13,6 @@ output "cluster_ca" {
   value = module.eks.cluster_certificate_authority_data
 }
 
-output "cluster_oidc_issuer_url" {
-  description = "EKS 클러스터의 OIDC Issuer URL"
-  value = module.eks.cluster_oidc_issuer_url
-}
-
 output "cluster_oidc_provider_arn" {
   description = "EKS 클러스터에 연결된 OIDC Provider의 ARN"
   value       = aws_iam_openid_connect_provider.oidc.arn
