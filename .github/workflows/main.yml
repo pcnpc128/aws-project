@@ -39,6 +39,10 @@ jobs:
           -target=module.route53 \
           -target=module.seoul_eks \
           -target=module.tokyo_eks \
+          -target=module.seoul_irsa_autoscaler \
+          -target=module.tokyo_irsa_autoscaler \
+          -target=module.seoul_irsa_alb_controller \
+          -target=module.tokyo_irsa_alb_controller \
           -out=tfplan
         
     - name: Terraform Apply
