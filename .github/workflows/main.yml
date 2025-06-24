@@ -99,8 +99,13 @@ jobs:
       run: |
         aws eks update-kubeconfig \
           --region ap-northeast-2 \
-          --name myapp-seoul \
+          --name myapp-seoul
       continue-on-error: true
+
+    - name: kubeconfig-seoul 존재 여부 및 내용 출력
+      run: |
+        ls -l ~/.kube/config
+        cat ~/.kube/config
 
     - name: my-node-app-deployment (서울)
       run: |
@@ -213,8 +218,13 @@ jobs:
       run: |
         aws eks update-kubeconfig \
           --region ap-northeast-1 \
-          --name myapp-tokyo \
+          --name myapp-tokyo
       continue-on-error: true
+
+    - name: kubeconfig-tokyo 존재 여부 및 내용 출력
+      run: |
+        ls -l ~/.kube/config
+        cat ~/.kube/config
 
     - name: my-node-app-deployment (도쿄)
       run: |
