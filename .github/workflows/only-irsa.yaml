@@ -1,0 +1,48 @@
+name: irsa include
+
+on:
+  workflow_dispatch:
+
+jobs:
+  irsa:
+    name: Deploy irsa
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.7.5
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan (infra only)
+      run: |
+        terraform plan \
+          -target=module.seoul_irsa_autoscaler \
+          -target=module.tokyo_irsa_autoscaler \
+          -target=module.seoul_irsa_alb_controller \
+          -target=module.tokyo_irsa_alb_controller \
+          -out=tfplan
+        
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      continue-on-error: true
+
+    - name: Upload Terraform State
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: terraform.tfstate
