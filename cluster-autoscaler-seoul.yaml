@@ -6,7 +6,7 @@ metadata:
   namespace: kube-system
   annotations:
     # Terraform으로 생성한 IRSA IAM Role ARN을 여기에 삽입
-    eks.amazonaws.com/role-arn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/cluster-autoscaler-role-seoul
+    eks.amazonaws.com/role-arn: arn:aws:iam::501257812675:role/cluster-autoscaler-role-seoul
 ---
 # Cluster Autoscaler에 필요한 ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
