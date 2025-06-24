@@ -14,9 +14,9 @@ variable "tokyo_rds_endpoint" {
   type = string
 }
 
-variable "domain" {
-  type = string
-}
+#variable "domain" {
+#  type = string
+#}
 
 #variable "ga_dns" {
 #  type = string
