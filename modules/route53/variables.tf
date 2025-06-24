@@ -18,9 +18,9 @@ variable "domain" {
   type = string
 }
 
-variable "ga_dns" {
-  type = string
-}
+#variable "ga_dns" {
+#  type = string
+#}
 
 variable "vpc_id" {
   description = "EKS가 속한 VPC ID"
