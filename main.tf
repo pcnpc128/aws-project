@@ -417,11 +417,13 @@ module "tokyo_irsa_alb_controller" {
 }
 
 resource "aws_iam_role_policy_attachment" "seoul-ecr_pull" {
-  role     = module.seoul_eks.eks_managed_node_groups["default"].iam_role_name
+  providers            = { aws = aws.seoul }
+  role     = module.seoul_eks.node_group_role_name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "tokyo-ecr_pull" {
-  role     = module.tokyo_eks.eks_managed_node_groups["default"].iam_role_name
+  providers            = { aws = aws.tokyo }
+  role     = module.tokyo_eks.node_group_role_name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
