@@ -49,6 +49,8 @@ jobs:
       run: |
         ls -l ~/.kube/config
         cat ~/.kube/config
+        kubectl edit configmap aws-auth -n kube-system
+        kubectl get nodes
 
     - name: Validate AWS Auth
       run: aws sts get-caller-identity
