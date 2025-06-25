@@ -19,10 +19,11 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
+      name = var.node_group
       desired_capacity = 1
       max_capacity     = 6
       min_capacity     = 1
-      instance_types   = ["t2.micro"]           # 실운영은 용량에 맞게
+      instance_types   = ["t3.medium"]           # 실운영은 용량에 맞게
       tags = {
         "k8s.io/cluster-autoscaler/enabled"                 = "true"
         "k8s.io/cluster-autoscaler/${var.cluster_name}"     = "owned"
