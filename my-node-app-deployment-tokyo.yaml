@@ -40,7 +40,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/target-type: ip  # IP 기반 타겟 사용
 spec:
-  type: NodePort  # ClusterIP 대신 NodePort → ALB가 이 포트를 바라보게 됨
+  type: ClusterIP
   ports:
     - port: 80          # 클라이언트가 접속할 포트 (ex: ALB가 요청 보냄)
       targetPort: 8080  # 실제 컨테이너 포트
