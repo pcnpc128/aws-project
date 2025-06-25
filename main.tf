@@ -140,28 +140,6 @@ module "seoul_eks" {
 #  vpc_id          = module.seoul_vpc.vpc_id
 #}
 
-module "seoul_irsa_autoscaler" {
-  source = "./modules/irsa-role"
-  providers       = { aws = aws.seoul }
-  oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
-  oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
-  namespace             = "kube-system"
-  service_account_name  = "cluster-autoscaler"
-  role_name             = "seoul-cluster-autoscaler-role"
-  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
-}
-
-module "seoul_irsa_alb_controller" {
-  source = "./modules/irsa-role"
-  providers       = { aws = aws.seoul }
-  oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
-  oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
-  namespace             = "kube-system"
-  service_account_name  = "aws-load-balancer-controller"
-  role_name             = "seoul-alb-controller-role"
-  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
-}
-
 #module "seoul_ecr" {
 #  source      = "./modules/ecr"
 #  providers   = { aws = aws.seoul }
@@ -297,28 +275,6 @@ module "tokyo_eks" {
 #  vpc_id          = module.tokyo_vpc.vpc_id
 #}
 
-module "tokyo_irsa_autoscaler" {
-  source = "./modules/irsa-role"
-  providers       = { aws = aws.tokyo }
-  oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
-  oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
-  namespace             = "kube-system"
-  service_account_name  = "cluster-autoscaler"
-  role_name             = "tokyo-cluster-autoscaler-role"
-  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
-}
-
-module "tokyo_irsa_alb_controller" {
-  source = "./modules/irsa-role"
-  providers       = { aws = aws.tokyo }
-  oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
-  oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
-  namespace             = "kube-system"
-  service_account_name  = "aws-load-balancer-controller"
-  role_name             = "tokyo-alb-controller-role"
-  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
-}
-
 #module "tokyo_ecr" {
 #  source      = "./modules/ecr"
 #  providers   = { aws = aws.tokyo }
@@ -414,4 +370,54 @@ module "route53" {
     seoul = module.seoul_vpc.vpc_id
     tokyo = module.tokyo_vpc.vpc_id
   }
+}
+
+module "seoul_irsa_autoscaler" {
+  source = "./modules/irsa-role"
+  oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
+  oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
+  namespace             = "kube-system"
+  service_account_name  = "cluster-autoscaler"
+  role_name             = "seoul-cluster-autoscaler-role"
+  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
+}
+
+module "seoul_irsa_alb_controller" {
+  source = "./modules/irsa-role"
+  oidc_provider_arn     = module.seoul_eks.oidc_provider_arn
+  oidc_issuer_url       = module.seoul_eks.cluster_oidc_issuer_url
+  namespace             = "kube-system"
+  service_account_name  = "aws-load-balancer-controller"
+  role_name             = "seoul-alb-controller-role"
+  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
+}
+
+module "tokyo_irsa_autoscaler" {
+  source = "./modules/irsa-role"
+  oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
+  oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
+  namespace             = "kube-system"
+  service_account_name  = "cluster-autoscaler"
+  role_name             = "tokyo-cluster-autoscaler-role"
+  policy_json           = file("${path.root}/policies/cluster-autoscaler-policy.json")
+}
+
+module "tokyo_irsa_alb_controller" {
+  source = "./modules/irsa-role"
+  oidc_provider_arn     = module.tokyo_eks.oidc_provider_arn
+  oidc_issuer_url       = module.tokyo_eks.cluster_oidc_issuer_url
+  namespace             = "kube-system"
+  service_account_name  = "aws-load-balancer-controller"
+  role_name             = "tokyo-alb-controller-role"
+  policy_json           = file("${path.root}/policies/alb-controller-policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "seoul-ecr_pull" {
+  role     = module.seoul_eks.eks_managed_node_groups["default"].iam_role_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+resource "aws_iam_role_policy_attachment" "tokyo-ecr_pull" {
+  role     = module.tokyo_eks.eks_managed_node_groups["default"].iam_role_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
