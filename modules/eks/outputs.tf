@@ -36,3 +36,10 @@ output "cluster_oidc_thumbprint" {
   description = "OIDC 프로바이더의 Thumbprint (IAM OIDC provider 생성 시 사용)"
   value = data.tls_certificate.oidc_thumbprint.certificates[0].sha1_fingerprint
 }
+
+output "node_group_role_name" {
+  value = try(
+    module.eks.eks_managed_node_groups["default"].iam_role_name,
+    null
+  )
+}
