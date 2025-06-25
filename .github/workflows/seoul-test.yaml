@@ -19,6 +19,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: 필수 도구 설치
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext-base jq mysql-client
+
+        # kubectl 설치
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
@@ -46,16 +56,6 @@ jobs:
       with:
         name: tfstate
         path: terraform.tfstate
-
-    - name: 필수 도구 설치
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gettext-base jq mysql-client
-
-        # kubectl 설치
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
       
     - name: kubeconfig 업데이트(서울)
       run: |
@@ -67,8 +67,6 @@ jobs:
       run: |
         ls -l ~/.kube/config
         cat ~/.kube/config
-        kubectl edit configmap aws-auth -n kube-system
-        kubectl get nodes
 
     - name: metric-server 배포 (서울)
       run: |
