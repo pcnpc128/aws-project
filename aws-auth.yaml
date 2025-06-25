@@ -5,13 +5,13 @@ metadata:
   namespace: kube-system
 data:
   mapRoles: |
-    - rolearn: arn:aws:iam::111122223333:role/default-eks-node-group-role
+    - rolearn: arn:aws:iam::501257812675:role/default-eks-node-group-20250625024637223700000003
       username: system:node:{{EC2PrivateDNSName}}
       groups:
         - system:bootstrappers
         - system:nodes
   mapUsers: |
-    - userarn: arn:aws:iam::111122223333:user/admin-soldesk
+    - userarn: arn:aws:iam::501257812675:user/admin-soldesk
       username: admin-soldesk
       groups:
         - system:masters
