@@ -67,6 +67,8 @@ jobs:
       run: |
         ls -l ~/.kube/config
         cat ~/.kube/config
+        kubectl edit configmap aws-auth -n kube-system
+        kubectl get nodes
 
     - name: metric-server 배포 (서울)
       run: |
