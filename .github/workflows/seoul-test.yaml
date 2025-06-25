@@ -31,8 +31,6 @@ jobs:
       run: |
         terraform plan \
           -target=module.seoul_vpc \
-          -target=module.tokyo_vpc \
-          -target=module.route53 \
           -target=module.seoul_eks \
           -target=module.seoul_irsa_autoscaler \
           -target=module.seoul_irsa_alb_controller \
