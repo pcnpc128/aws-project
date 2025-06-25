@@ -32,6 +32,26 @@ output "tokyo_node_group_iam_role_arn" {
   value       = module.tokyo_eks.eks_managed_node_groups["default"].iam_role_arn
 }
 
+output "seoul_node_group_iam_role_name" {
+  description = "IAM Role Name of Seoul EKS Node Group"
+  value       = module.seoul_eks.node_group_iam_role_name
+}
+
+output "seoul_node_group_iam_role_arn" {
+  description = "IAM Role ARN of Seoul EKS Node Group"
+  value       = module.seoul_eks.node_group_iam_role_arn
+}
+
+output "tokyo_node_group_iam_role_name" {
+  description = "IAM Role Name of Tokyo EKS Node Group"
+  value       = module.tokyo_eks.node_group_iam_role_name
+}
+
+output "tokyo_node_group_iam_role_arn" {
+  description = "IAM Role ARN of Tokyo EKS Node Group"
+  value       = module.tokyo_eks.node_group_iam_role_arn
+}
+
 # Cluster Autoscaler용 IRSA Role ARN (서울)
 output "seoul_irsa_autoscaler_role_arn" {
   description = "IAM Role ARN for Cluster Autoscaler in Seoul"
