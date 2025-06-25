@@ -68,3 +68,7 @@ resource "aws_iam_role_policy" "this" {
 output "role_arn" {
   value = aws_iam_role.this.arn
 }
+
+output "iam_role_arn" {
+  value = aws_iam_role.this.arn
+}
