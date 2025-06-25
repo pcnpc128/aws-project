@@ -119,6 +119,7 @@ module "seoul_eks" {
   cluster_version = var.cluster_version
   vpc_id          = module.seoul_vpc.vpc_id
   public_subnets  = module.seoul_vpc.public_subnet_ids
+  node_group      = seoul-managed-node-group
 }
 
 #module "seoul_eks_app" {
@@ -254,6 +255,7 @@ module "tokyo_eks" {
   cluster_version = var.cluster_version
   vpc_id          = module.tokyo_vpc.vpc_id
   public_subnets  = module.tokyo_vpc.public_subnet_ids
+  node_group      = tokyo-managed-node-group
 }
 
 #module "tokyo_eks_app" {
