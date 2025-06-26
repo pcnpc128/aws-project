@@ -20,6 +20,7 @@ module "eks" {
   eks_managed_node_groups = {
     default = {
       name = var.node_group
+      iam_role_name = "${var.node_group}-role"
       desired_capacity = 1
       max_capacity     = 6
       min_capacity     = 1
