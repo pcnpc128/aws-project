@@ -50,13 +50,3 @@ output "node_group_role_arn" {
     null
   )
 }
-
-output "node_group_iam_role_name" {
-  description = "IAM Role Name of the default EKS managed node group"
-  value       = aws_iam_role.this[0].name
-}
-
-output "node_group_iam_role_arn" {
-  description = "IAM Role ARN of the default EKS managed node group"
-  value       = aws_iam_role.this[0].arn
-}
