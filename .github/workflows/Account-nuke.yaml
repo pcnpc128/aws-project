@@ -17,6 +17,7 @@ jobs:
           sudo mv aws-nuke /usr/local/bin/aws-nuke
 
 
+
       - name: Create config.yml from secret
         run: |
           echo "${{ secrets.NUKE_CONFIG }}" > config.yml
