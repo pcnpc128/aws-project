@@ -1,33 +1,39 @@
 name: AWS Nuke
 
 on:
-  workflow_dispatch:  # 수동 실행만 가능하게 설정
+  workflow_dispatch:  # 수동 실행만 가능하게
 
 jobs:
   nuke:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Install aws-nuke
         run: |
-          curl -L https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64 -o aws-nuke
-          chmod +x aws-nuke
-          sudo mv aws-nuke /usr/local/bin/aws-nuke
+          curl -L -o aws-nuke.tar.gz https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64.tar.gz
+          tar -xzf aws-nuke.tar.gz
+          chmod +x aws-nuke-v2.24.0-linux-amd64
+          sudo mv aws-nuke-v2.24.0-linux-amd64 /usr/local/bin/aws-nuke
 
-      - name: Create config.yml from secret
+      - name: Create config.yml from GitHub Secret
         run: |
           echo "${{ secrets.NUKE_CONFIG }}" > config.yml
 
-      - name: AWS Nuke Dry Run (Preview)
+      - name: Debug config.yml (내용 확인용)
+        run: |
+          echo "====== config.yml ======"
+          cat config.yml
+
+      - name: AWS Nuke Dry Run
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws-nuke --config config.yml
-          
-      # 실제 삭제를 원할 경우 아래 주석을 해제하세요!
+
+      # 실제 삭제 (dry-run 검증 후 주석 해제)
       # - name: AWS Nuke Destroy
       #   env:
       #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
