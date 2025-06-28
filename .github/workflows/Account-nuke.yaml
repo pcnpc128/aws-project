@@ -12,16 +12,10 @@ jobs:
 
       - name: Install aws-nuke
         run: |
-          curl -L -o aws-nuke https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64
-          file aws-nuke
-          if file aws-nuke | grep -q "ELF 64-bit"; then
-            chmod +x aws-nuke
-            sudo mv aws-nuke /usr/local/bin/aws-nuke
-          else
-            echo "❌ aws-nuke 파일이 유효하지 않음 (다운로드 실패)"
-            cat aws-nuke
-            exit 1
-          fi
+          curl -L -o aws-nuke.tar.gz https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64.tar.gz
+          tar -xzf aws-nuke.tar.gz
+          chmod +x aws-nuke-v2.24.0-linux-amd64
+          sudo mv aws-nuke-v2.24.0-linux-amd64 /usr/local/bin/aws-nuke
 
       - name: Create config.yml from secret
         run: |
