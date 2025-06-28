@@ -21,10 +21,10 @@ jobs:
         run: |
           echo "${{ secrets.NUKE_CONFIG }}" > config.yml
 
-      - name: Debug config.yml (내용 확인용)
+      - name: Debug config.yml
         run: |
-          echo "====== config.yml ======"
-          cat config.yml
+          echo "====== config.yml (raw) ======"
+          cat -A config.yml
 
       - name: AWS Nuke Dry Run
         env:
