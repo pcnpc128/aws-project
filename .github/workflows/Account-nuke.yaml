@@ -17,9 +17,9 @@ jobs:
           chmod +x aws-nuke-v2.24.0-linux-amd64
           sudo mv aws-nuke-v2.24.0-linux-amd64 /usr/local/bin/aws-nuke
 
-      - name: Create config.yml from GitHub Secret
+      - name: Create config.yml from Base64 secret
         run: |
-          echo "${{ secrets.NUKE_CONFIG }}" > config.yml
+          echo "${{ secrets.NUKE_CONFIG_B64 }}" | base64 -d > config.yml
 
       - name: Debug config.yml (마스킹돼도 괜찮음)
         run: |
