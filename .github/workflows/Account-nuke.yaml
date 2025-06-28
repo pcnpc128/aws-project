@@ -12,9 +12,10 @@ jobs:
 
       - name: Install aws-nuke
         run: |
-          curl -L https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64 -o aws-nuke
+          curl -L -o aws-nuke https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64
           chmod +x aws-nuke
           sudo mv aws-nuke /usr/local/bin/aws-nuke
+
 
       - name: Create config.yml from secret
         run: |
