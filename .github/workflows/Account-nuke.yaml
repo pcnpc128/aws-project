@@ -26,16 +26,10 @@ jobs:
           echo "====== config.yml (GitHub Secret 기반) ======"
           cat -A config.yml
 
-      - name: AWS Nuke Dry Run
+
+      - name: AWS Nuke 실제 삭제
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws-nuke --config config.yml
-
-      # - name: AWS Nuke 실제 삭제
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #   run: |
-      #     aws-nuke --config config.yml --no-dry-run --force
+          aws-nuke --config config.yml --no-dry-run --force
