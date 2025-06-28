@@ -1,7 +1,7 @@
 name: AWS Nuke
 
 on:
-  workflow_dispatch:  # 수동 실행만 가능하게 설정
+  workflow_dispatch:
 
 jobs:
   nuke:
@@ -13,10 +13,15 @@ jobs:
       - name: Install aws-nuke
         run: |
           curl -L -o aws-nuke https://github.com/rebuy-de/aws-nuke/releases/download/v2.24.0/aws-nuke-v2.24.0-linux-amd64
-          chmod +x aws-nuke
-          sudo mv aws-nuke /usr/local/bin/aws-nuke
-
-
+          file aws-nuke
+          if file aws-nuke | grep -q "ELF 64-bit"; then
+            chmod +x aws-nuke
+            sudo mv aws-nuke /usr/local/bin/aws-nuke
+          else
+            echo "❌ aws-nuke 파일이 유효하지 않음 (다운로드 실패)"
+            cat aws-nuke
+            exit 1
+          fi
 
       - name: Create config.yml from secret
         run: |
@@ -28,6 +33,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws-nuke --config config.yml
+
           
       # 실제 삭제를 원할 경우 아래 주석을 해제하세요!
       # - name: AWS Nuke Destroy
